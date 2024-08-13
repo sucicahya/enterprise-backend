@@ -58,7 +58,7 @@ app.get('/main-table', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -80,7 +80,7 @@ app.get('/penempatan-cloud', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -102,7 +102,7 @@ app.get('/penempatan-onprem', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -124,7 +124,7 @@ app.get('/status-aktif', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -146,7 +146,7 @@ app.get('/status-nonaktif', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -168,7 +168,7 @@ app.get('/total', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -190,7 +190,7 @@ app.get('/produk-masuk', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         res.json(results);
       }
@@ -215,7 +215,7 @@ app.post('/full-detail', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         console.log('Query Results:', results);
         res.json(results);
@@ -247,7 +247,7 @@ app.post('/full-detail', (req, res) => {
   //   conn.query(query, [id], (err, results) => {
   //     if (err) {
   //       console.error('Error executing query:', err);
-  //       res.status(500).send('Query execution error');
+  //       res.status(500).send('Query execution error', err);
   //     } else {
   //       res.json(results);
   //     }
@@ -272,7 +272,7 @@ app.post('/full-account', (req, res) => {
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
-        res.status(500).send('Query execution error');
+        res.status(500).send('Query execution error', err);
       } else {
         console.log('Query Results:', results);
         res.json(results);
@@ -304,7 +304,7 @@ app.post('/full-account', (req, res) => {
   //   conn.query(query, [id], (err, results) => {
   //     if (err) {
   //       console.error('Error executing query:', err);
-  //       res.status(500).send('Query execution error');
+  //       res.status(500).send('Query execution error', err);
   //     } else {
   //       res.json(results);
   //     }
