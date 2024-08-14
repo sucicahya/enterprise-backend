@@ -20,7 +20,7 @@ const cors = require('cors');
 const app = express();
 const port = 5000;
 
-const connectionString = 'Driver={ODBC Driver 17 for SQL Server};Server=40005-MP1PWS22;Database=enterprise;Trusted_Connection=yes;';
+const connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=40005-MP1PWS22;Database=enterprise;Trusted_Connection=yes;`;
 
 // sql.open(connectionString, (err, conn) => {
 //   if (err) {
@@ -54,7 +54,19 @@ app.get('/main-table', (req, res) => {
       return;
     }
 
-    const query = 'SELECT produk.ID_PRODUK, produk.NAMA_PRODUK, produk_detail.URL, spec_server.IP_SERVER, karyawan.NAMA, status.NAMA_STATUS FROM produk INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS';
+    const query = `
+    SELECT produk.ID_PRODUK, 
+    produk.NAMA_PRODUK, 
+    produk_detail.URL, 
+    spec_server.IP_SERVER, 
+    karyawan.NAMA, 
+    status.NAMA_STATUS 
+    FROM produk 
+    INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
+    INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER 
+    INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS 
+    INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -76,7 +88,15 @@ app.get('/penempatan-cloud', (req, res) => {
       return;
     }
 
-    const query = "SELECT penempatan.NAMA_PENEMPATAN AS penempatan, COUNT(produk.NAMA_PRODUK) AS total FROM penempatan LEFT JOIN produk_detail ON penempatan.ID_PENEMPATAN = produk_detail.PENEMPATAN LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID WHERE penempatan.NAMA_PENEMPATAN = 'Cloud' GROUP BY penempatan.NAMA_PENEMPATAN;";
+    const query = `
+    SELECT penempatan.NAMA_PENEMPATAN AS penempatan, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM penempatan 
+    LEFT JOIN produk_detail ON penempatan.ID_PENEMPATAN = produk_detail.PENEMPATAN 
+    LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
+    WHERE penempatan.NAMA_PENEMPATAN = 'Cloud' 
+    GROUP BY penempatan.NAMA_PENEMPATAN;`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -98,7 +118,15 @@ app.get('/penempatan-onprem', (req, res) => {
       return;
     }
 
-    const query = "SELECT penempatan.NAMA_PENEMPATAN AS penempatan, COUNT(produk.NAMA_PRODUK) AS total FROM penempatan LEFT JOIN produk_detail ON penempatan.ID_PENEMPATAN = produk_detail.PENEMPATAN LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID WHERE penempatan.NAMA_PENEMPATAN = 'On-Premise' GROUP BY penempatan.NAMA_PENEMPATAN;";
+    const query = `
+    SELECT penempatan.NAMA_PENEMPATAN AS penempatan, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM penempatan 
+    LEFT JOIN produk_detail ON penempatan.ID_PENEMPATAN = produk_detail.PENEMPATAN 
+    LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
+    WHERE penempatan.NAMA_PENEMPATAN = 'On-Premise' 
+    GROUP BY penempatan.NAMA_PENEMPATAN;`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -120,7 +148,14 @@ app.get('/status-aktif', (req, res) => {
       return;
     }
 
-    const query = "SELECT status.NAMA_STATUS AS status, COUNT(produk.NAMA_PRODUK) AS total FROM status LEFT JOIN produk ON produk.FLAG_STATUS = status.ID_STATUS WHERE status.NAMA_STATUS = 'Aktif' GROUP BY status.NAMA_STATUS;";
+    const query = `
+    SELECT status.NAMA_STATUS AS status, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM status 
+    LEFT JOIN produk ON produk.FLAG_STATUS = status.ID_STATUS 
+    WHERE status.NAMA_STATUS = 'Aktif' 
+    GROUP BY status.NAMA_STATUS;`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -142,7 +177,14 @@ app.get('/status-nonaktif', (req, res) => {
       return;
     }
 
-    const query = "SELECT status.NAMA_STATUS AS status, COUNT(produk.NAMA_PRODUK) AS total FROM status LEFT JOIN produk ON produk.FLAG_STATUS = status.ID_STATUS WHERE status.NAMA_STATUS = 'Non-Aktif' GROUP BY status.NAMA_STATUS;";
+    const query = `
+    SELECT status.NAMA_STATUS AS status, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM status 
+    LEFT JOIN produk ON produk.FLAG_STATUS = status.ID_STATUS 
+    WHERE status.NAMA_STATUS = 'Non-Aktif' 
+    GROUP BY status.NAMA_STATUS;`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -164,7 +206,7 @@ app.get('/total', (req, res) => {
       return;
     }
 
-    const query = "SELECT COUNT(NAMA_PRODUK) AS total FROM produk;";
+    const query = `SELECT COUNT(NAMA_PRODUK) AS total FROM produk;`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -186,7 +228,13 @@ app.get('/produk-masuk', (req, res) => {
       return;
     }
 
-    const query = "SELECT COUNT(produk.NAMA_PRODUK) AS total FROM produk LEFT JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID WHERE DATEPART(MONTH, produk_detail.TANGGAL_DEPLOY) = DATEPART(MONTH, GETDATE()) AND DATEPART(YEAR, produk_detail.TANGGAL_DEPLOY) = DATEPART(YEAR, GETDATE());";
+    const query = `
+    SELECT COUNT(produk.NAMA_PRODUK) AS total 
+    FROM produk 
+    LEFT JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
+    WHERE DATEPART(MONTH, produk_detail.TANGGAL_DEPLOY) = DATEPART(MONTH, GETDATE()) 
+    AND DATEPART(YEAR, produk_detail.TANGGAL_DEPLOY) = DATEPART(YEAR, GETDATE());`;
+
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -208,7 +256,7 @@ app.get('/pilih-penempatan', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM penempatan';
+    const query = `SELECT * FROM penempatan`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -230,7 +278,7 @@ app.get('/pilih-karyawan', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM karyawan';
+    const query = `SELECT * FROM karyawan`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -252,7 +300,7 @@ app.get('/pilih-akses', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM akses';
+    const query = `SELECT * FROM akses`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -274,7 +322,7 @@ app.get('/pilih-developer', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM developer';
+    const query = `SELECT * FROM developer`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -296,7 +344,7 @@ app.get('/pilih-status', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM status';
+    const query = `SELECT * FROM status`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -318,7 +366,7 @@ app.get('/pilih-server', (req, res) => {
       return;
     }
 
-    const query = 'SELECT * FROM web_server';
+    const query = `SELECT * FROM web_server`;
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
@@ -346,7 +394,72 @@ app.post('/full-detail', (req, res) => {
       return;
     }
 
-    const query = `SELECT produk.ID_PRODUK, produk.NAMA_PRODUK, produk.DESKRIPSI_PRODUK, akses.NAMA_AKSES, developer.NAMA_DEVELOPER, karyawan.NAMA, karyawan.TELEPON, penempatan.NAMA_PENEMPATAN, status.NAMA_STATUS, produk_detail.PIC_NIPPOS, produk_detail.BUSINESS_OWNER, produk_detail.WAKTU_OPERASIONAL, produk_detail.URL, produk_detail.PORT, produk_detail.FRAMEWORK, produk_detail.VER_FRAMEWORK, produk_detail.JENIS_DATABASE, produk_detail.TANGGAL_LIVE, produk_detail.TANGGAL_AKHIR_UPDATE, produk_detail.TANGGAL_TUTUP, produk_detail.TANGGAL_DEPLOY, produk_detail.BA_DEPLOY, produk_detail.REQ_DEPLOY, spec_server.IP_SERVER, spec_server.CPU, spec_server.RAM, spec_server.STORAGE, web_server.NAMA_WEB_SERVER FROM produk_detail INNER JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS INNER JOIN akses ON produk_detail.AKSES = akses.ID_AKSES INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER WHERE produk.ID_PRODUK = ${id};`;
+    const query = `
+    SELECT produk.ID_PRODUK, 
+    produk.NAMA_PRODUK, 
+    produk.DESKRIPSI_PRODUK, 
+    produk.FLAG_STATUS,
+
+    akses.NAMA_AKSES, 
+    akses.ID_AKSES,
+
+    developer.ID_DEVELOPER,
+    developer.NAMA_DEVELOPER, 
+    
+    karyawan.NAMA, 
+    karyawan.TELEPON, 
+    karyawan.NIPPOS,
+    karyawan.USERNAME,
+    karyawan.PASS,
+
+    penempatan.NAMA_PENEMPATAN, 
+    penempatan.ID_PENEMPATAN,
+
+    status.NAMA_STATUS, 
+    status.ID_STATUS,
+
+    produk_detail.ID_PRODUK_DETAIL,
+    produk_detail.PRODUK_ID,
+    produk_detail.PENEMPATAN,
+    produk_detail.PIC_NIPPOS, 
+    produk_detail.AKSES,
+    produk_detail.DEVELOPER,
+    produk_detail.SERVER,
+    produk_detail.BUSINESS_OWNER, 
+    produk_detail.WAKTU_OPERASIONAL, 
+    produk_detail.URL, 
+    produk_detail.PORT, 
+    produk_detail.FRAMEWORK, 
+    produk_detail.VER_FRAMEWORK, 
+    produk_detail.JENIS_DATABASE, 
+    produk_detail.TANGGAL_LIVE, 
+    produk_detail.TANGGAL_AKHIR_UPDATE, 
+    produk_detail.TANGGAL_TUTUP, 
+    produk_detail.TANGGAL_DEPLOY, 
+    produk_detail.BA_DEPLOY, 
+    produk_detail.REQ_DEPLOY, 
+
+    spec_server.ID_SPEC_SERVER,
+    spec_server.WEB_SERVER_ID,
+    spec_server.IP_SERVER, 
+    spec_server.CPU, 
+    spec_server.RAM, 
+    spec_server.STORAGE, 
+
+    web_server.ID_WEB_SERVER,
+    web_server.NAMA_WEB_SERVER 
+
+    FROM produk_detail 
+    INNER JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
+    INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS 
+    INNER JOIN akses ON produk_detail.AKSES = akses.ID_AKSES 
+    INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER 
+    INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS 
+    INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN 
+    INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER 
+    INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER 
+    WHERE produk.ID_PRODUK = ${id};`;
+
     // console.log('Received ID:', query);
     conn.query(query, (err, results) => {
       if (err) {
@@ -403,7 +516,13 @@ app.post('/full-account', (req, res) => {
       return;
     }
 
-    const query = `SELECT account.ID_ACCOUNT, account.USERNAME, account.PASS, account.EXP_DATE_PASSWORD, account.JENIS_AKUN FROM account WHERE account.PRODUK_ID = ${id};`;
+    const query = `
+    SELECT account.ID_ACCOUNT, 
+    account.USERNAME, 
+    account.PASS, 
+    account.EXP_DATE_PASSWORD, 
+    account.JENIS_AKUN FROM account 
+    WHERE account.PRODUK_ID = ${id};`;
     // console.log('Received ID:', query);
     conn.query(query, (err, results) => {
       if (err) {
@@ -421,31 +540,31 @@ app.post('/full-account', (req, res) => {
 
 app.post('/update-all', (req, res) => {
   sql.open(connectionString, (err, conn) => {
-    console.log('pppp', req.body.ID_PRODUK)
+    console.log('pppp', req.body)
     var ID_PRODUK = Number(req.body.ID_PRODUK); // Mengambil id dari objek req.body
     var NAMA_PRODUK = req.body.NAMA_PRODUK;
     var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
-    console.log('pppp',typeof(ID_PRODUK))
-    console.log('pppp',typeof(NAMA_PRODUK))
-    console.log('pppp',typeof(DESKRIPSI_PRODUK))
-    const { URL } = req.body.URL;
+    console.log('pppp', typeof (ID_PRODUK))
+    console.log('pppp', typeof (NAMA_PRODUK))
+    console.log('pppp', typeof (DESKRIPSI_PRODUK))
+    var URL = req.body.URL;
     // const { IP_SERVER } = req.body.IP_SERVER;
-    const { NAMA_PENEMPATAN } = req.body.NAMA_PENEMPATAN;
-    const { NAMA_AKSES } = req.body.NAMA_AKSES;
+    var PENEMPATAN = Number(req.body.PENEMPATAN);
+    var AKSES =  Number(req.body.AKSES);
     // const { CPU } = req.body.CPU;
     // const { RAM } = req.body.RAM;
     // const { STORAGE } = req.body.STORAGE;
-    const { NAMA_WEB_SERVER } = req.body.NAMA_WEB_SERVER;
-    const { JENIS_DATABASE } = req.body.JENIS_DATABASE;
-    const { FRAMEWORK } = req.body.FRAMEWORK;
-    const { VER_FRAMEWORK } = req.body.VER_FRAMEWORK;
-    const { WAKTU_OPERASIONAL } = req.body.WAKTU_OPERASIONAL;
-    const { NAMA_DEVELOPER } = req.body.NAMA_DEVELOPER;
-    const { BUSINESS_OWNER } = req.body.BUSINESS_OWNER;
-    const { NAMA } = req.body.PIC;
+    var SERVER = Number(req.body.SERVER);
+    var JENIS_DATABASE = req.body.JENIS_DATABASE;
+    var FRAMEWORK = req.body.FRAMEWORK;
+    var VER_FRAMEWORK = req.body.VER_FRAMEWORK;
+    var WAKTU_OPERASIONAL = req.body.WAKTU_OPERASIONAL;
+    var DEVELOPER = req.body.DEVELOPER;
+    var BUSINESS_OWNER = req.body.BUSINESS_OWNER;
+    var PIC_NIPPOS = req.body.PIC_NIPPOS;
     // const { TELEPON } = req.body.TELEPON;
-    const { PORT } = req.body.PORT;
-    const { NAMA_STATUS } = req.body.NAMA_STATUS;
+    var PORT = req.body.PORT;
+    var NAMA_STATUS =  Number(req.body.NAMA_STATUS);
     // const { TANGGAL_LIVE } = req.body.TANGGAL_LIVE;
     // const { TANGGAL_DEPLOY } = req.body.TANGGAL_DEPLOY;
     // const { TANGGAL_AKHIR_UPDATE } = req.body.TANGGAL_AKHIR_UPDATE;
@@ -455,39 +574,37 @@ app.post('/update-all', (req, res) => {
     // const { USERNAME } = req.body.USERNAME;
     // const { PASS } = req.body.PASS;
     // const { EXP_DATE_PASSWORD } = req.body.EXP_DATE_PASSWORD;
-    console.log('Received ID:', id);
+    // console.log('Received ID:', id);
     if (err) {
       console.error('Error occurred:', err);
       res.status(500).send('Database connection error');
       return;
     }
 
-    const query = `UPDATE produk SET 
-        NAMA_PRODUK = '${NAMA_PRODUK}',
-        DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
-        WHERE ID_PRODUK = ${ID_PRODUK}`
+    const query = `UPDATE produk_detail SET
+    PIC_NIPPOS = '${PIC_NIPPOS}',
+    PENEMPATAN = ${PENEMPATAN},
+    AKSES = ${AKSES},
+    DEVELOPER = ${DEVELOPER},
+    SERVER = ${SERVER},
+    BUSINESS_OWNER = '${BUSINESS_OWNER}',
+    WAKTU_OPERASIONAL = '${WAKTU_OPERASIONAL}',
+    URL = '${URL}',
+    PORT = '${PORT}',
+    FRAMEWORK = '${FRAMEWORK}',
+    VER_FRAMEWORK = '${VER_FRAMEWORK}',
+    JENIS_DATABASE = '${JENIS_DATABASE}'
+    WHERE PRODUK_ID = ${ID_PRODUK}`
 
-        // `UPDATE produk_detail SET
-        // PIC_NIPPOS = '${NAMA}',
-        // PENEMPATAN = ${NAMA_PENEMPATAN},
-        // AKSES = ${NAMA_AKSES},
-        // DEVELOPER = ${NAMA_DEVELOPER},
-        // SERVER = ${NAMA_WEB_SERVER},
-        // BUSINESS_OWNER = '${BUSINESS_OWNER}',
-        // WAKTU_OPERASIONAL = '${WAKTU_OPERASIONAL}',
-        // URL = '${URL}',
-        // PORT = '${PORT}',
-        // FRAMEWORK = '${FRAMEWORK}',
-        // VER_FRAMEWORK = '${VER_FRAMEWORK}',
-        // JENIS_DATABASE = '${JENIS_DATABASE}',
-        // FLAG_STATUS = '${NAMA_STATUS}',
-        // `
-      ;
-      
-      // TANGGAL_LIVE = '${TANGGAL_LIVE}',
-      // TANGGAL_AKHIR_UPDATE = '${TANGGAL_AKHIR_UPDATE}',
-      // TANGGAL_TUTUP = '${TANGGAL_TUTUP}',
-      // TANGGAL_DEPLOY = '${TANGGAL_DEPLOY}',
+    // const query = `UPDATE produk SET 
+    //     NAMA_PRODUK = '${NAMA_PRODUK}',
+    //     DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
+    //     WHERE ID_PRODUK = ${ID_PRODUK}`
+
+    // TANGGAL_LIVE = '${TANGGAL_LIVE}',
+    // TANGGAL_AKHIR_UPDATE = '${TANGGAL_AKHIR_UPDATE}',
+    // TANGGAL_TUTUP = '${TANGGAL_TUTUP}',
+    // TANGGAL_DEPLOY = '${TANGGAL_DEPLOY}',
     console.log('Received ID:', query);
     conn.query(query, (err, results) => {
       if (err) {
@@ -500,6 +617,18 @@ app.post('/update-all', (req, res) => {
 
       conn.close();
     });
+
+    // conn.query(query2, (err, results) => {
+    //   if (err) {
+    //     console.error('Error executing query:', err);
+    //     res.status(500).send('Query execution error', err);
+    //   } else {
+    //     // console.log('Query Results:', results);
+    //     res.json(results);
+    //   }
+
+    //   conn.close();
+    // });
   });
 });
 
