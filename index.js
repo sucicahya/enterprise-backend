@@ -200,10 +200,146 @@ app.get('/produk-masuk', (req, res) => {
   });
 });
 
+app.get('/pilih-penempatan', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM penempatan';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/pilih-karyawan', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM karyawan';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/pilih-akses', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM akses';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/pilih-developer', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM developer';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/pilih-status', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM status';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/pilih-server', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = 'SELECT * FROM web_server';
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+
+
+
+
 app.post('/full-detail', (req, res) => {
   sql.open(connectionString, (err, conn) => {
     const { id } = req.body; // Mengambil id dari objek req.body
-    console.log('Received ID:', id);
+    // console.log('Received ID:', id);
     if (err) {
       console.error('Error occurred:', err);
       res.status(500).send('Database connection error');
@@ -211,13 +347,13 @@ app.post('/full-detail', (req, res) => {
     }
 
     const query = `SELECT produk.ID_PRODUK, produk.NAMA_PRODUK, produk.DESKRIPSI_PRODUK, akses.NAMA_AKSES, developer.NAMA_DEVELOPER, karyawan.NAMA, karyawan.TELEPON, penempatan.NAMA_PENEMPATAN, status.NAMA_STATUS, produk_detail.PIC_NIPPOS, produk_detail.BUSINESS_OWNER, produk_detail.WAKTU_OPERASIONAL, produk_detail.URL, produk_detail.PORT, produk_detail.FRAMEWORK, produk_detail.VER_FRAMEWORK, produk_detail.JENIS_DATABASE, produk_detail.TANGGAL_LIVE, produk_detail.TANGGAL_AKHIR_UPDATE, produk_detail.TANGGAL_TUTUP, produk_detail.TANGGAL_DEPLOY, produk_detail.BA_DEPLOY, produk_detail.REQ_DEPLOY, spec_server.IP_SERVER, spec_server.CPU, spec_server.RAM, spec_server.STORAGE, web_server.NAMA_WEB_SERVER FROM produk_detail INNER JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS INNER JOIN akses ON produk_detail.AKSES = akses.ID_AKSES INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER WHERE produk.ID_PRODUK = ${id};`;
-    console.log('Received ID:', query);
+    // console.log('Received ID:', query);
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).send('Query execution error', err);
       } else {
-        console.log('Query Results:', results);
+        // console.log('Query Results:', results);
         res.json(results);
       }
 
@@ -253,14 +389,14 @@ app.post('/full-detail', (req, res) => {
   //     }
 
   //     conn.close();
-    // });
+  // });
   // });
 });
 
 app.post('/full-account', (req, res) => {
   sql.open(connectionString, (err, conn) => {
     const { id } = req.body; // Mengambil id dari objek req.body
-    console.log('Received ID:', id);
+    // console.log('Received ID:', id);
     if (err) {
       console.error('Error occurred:', err);
       res.status(500).send('Database connection error');
@@ -268,13 +404,97 @@ app.post('/full-account', (req, res) => {
     }
 
     const query = `SELECT account.ID_ACCOUNT, account.USERNAME, account.PASS, account.EXP_DATE_PASSWORD, account.JENIS_AKUN FROM account WHERE account.PRODUK_ID = ${id};`;
+    // console.log('Received ID:', query);
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/update-all', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    console.log('pppp', req.body.ID_PRODUK)
+    var ID_PRODUK = Number(req.body.ID_PRODUK); // Mengambil id dari objek req.body
+    var NAMA_PRODUK = req.body.NAMA_PRODUK;
+    var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
+    console.log('pppp',typeof(ID_PRODUK))
+    console.log('pppp',typeof(NAMA_PRODUK))
+    console.log('pppp',typeof(DESKRIPSI_PRODUK))
+    const { URL } = req.body.URL;
+    // const { IP_SERVER } = req.body.IP_SERVER;
+    const { NAMA_PENEMPATAN } = req.body.NAMA_PENEMPATAN;
+    const { NAMA_AKSES } = req.body.NAMA_AKSES;
+    // const { CPU } = req.body.CPU;
+    // const { RAM } = req.body.RAM;
+    // const { STORAGE } = req.body.STORAGE;
+    const { NAMA_WEB_SERVER } = req.body.NAMA_WEB_SERVER;
+    const { JENIS_DATABASE } = req.body.JENIS_DATABASE;
+    const { FRAMEWORK } = req.body.FRAMEWORK;
+    const { VER_FRAMEWORK } = req.body.VER_FRAMEWORK;
+    const { WAKTU_OPERASIONAL } = req.body.WAKTU_OPERASIONAL;
+    const { NAMA_DEVELOPER } = req.body.NAMA_DEVELOPER;
+    const { BUSINESS_OWNER } = req.body.BUSINESS_OWNER;
+    const { NAMA } = req.body.PIC;
+    // const { TELEPON } = req.body.TELEPON;
+    const { PORT } = req.body.PORT;
+    const { NAMA_STATUS } = req.body.NAMA_STATUS;
+    // const { TANGGAL_LIVE } = req.body.TANGGAL_LIVE;
+    // const { TANGGAL_DEPLOY } = req.body.TANGGAL_DEPLOY;
+    // const { TANGGAL_AKHIR_UPDATE } = req.body.TANGGAL_AKHIR_UPDATE;
+    // const { TANGGAL_TUTUP } = req.body.TANGGAL_TUTUP;
+    // const { ID_ACCOUNT } = req.body.ID_ACCOUNT;
+    // const { JENIS_AKUN } = req.body.JENIS_AKUN;
+    // const { USERNAME } = req.body.USERNAME;
+    // const { PASS } = req.body.PASS;
+    // const { EXP_DATE_PASSWORD } = req.body.EXP_DATE_PASSWORD;
+    console.log('Received ID:', id);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `UPDATE produk SET 
+        NAMA_PRODUK = '${NAMA_PRODUK}',
+        DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
+        WHERE ID_PRODUK = ${ID_PRODUK}`
+
+        // `UPDATE produk_detail SET
+        // PIC_NIPPOS = '${NAMA}',
+        // PENEMPATAN = ${NAMA_PENEMPATAN},
+        // AKSES = ${NAMA_AKSES},
+        // DEVELOPER = ${NAMA_DEVELOPER},
+        // SERVER = ${NAMA_WEB_SERVER},
+        // BUSINESS_OWNER = '${BUSINESS_OWNER}',
+        // WAKTU_OPERASIONAL = '${WAKTU_OPERASIONAL}',
+        // URL = '${URL}',
+        // PORT = '${PORT}',
+        // FRAMEWORK = '${FRAMEWORK}',
+        // VER_FRAMEWORK = '${VER_FRAMEWORK}',
+        // JENIS_DATABASE = '${JENIS_DATABASE}',
+        // FLAG_STATUS = '${NAMA_STATUS}',
+        // `
+      ;
+      
+      // TANGGAL_LIVE = '${TANGGAL_LIVE}',
+      // TANGGAL_AKHIR_UPDATE = '${TANGGAL_AKHIR_UPDATE}',
+      // TANGGAL_TUTUP = '${TANGGAL_TUTUP}',
+      // TANGGAL_DEPLOY = '${TANGGAL_DEPLOY}',
     console.log('Received ID:', query);
     conn.query(query, (err, results) => {
       if (err) {
         console.error('Error executing query:', err);
         res.status(500).send('Query execution error', err);
       } else {
-        console.log('Query Results:', results);
+        // console.log('Query Results:', results);
         res.json(results);
       }
 
