@@ -548,12 +548,12 @@ app.post('/update-all', (req, res) => {
     console.log('pppp', typeof (NAMA_PRODUK))
     console.log('pppp', typeof (DESKRIPSI_PRODUK))
     var URL = req.body.URL;
-    // const { IP_SERVER } = req.body.IP_SERVER;
+    var IP_SERVER = req.body.IP_SERVER;
     var PENEMPATAN = Number(req.body.PENEMPATAN);
-    var AKSES =  Number(req.body.AKSES);
-    // const { CPU } = req.body.CPU;
-    // const { RAM } = req.body.RAM;
-    // const { STORAGE } = req.body.STORAGE;
+    var AKSES = Number(req.body.AKSES);
+    var CPU = req.body.CPU;
+    var RAM = req.body.RAM;
+    var STORAGE = req.body.STORAGE;
     var SERVER = Number(req.body.SERVER);
     var JENIS_DATABASE = req.body.JENIS_DATABASE;
     var FRAMEWORK = req.body.FRAMEWORK;
@@ -564,24 +564,34 @@ app.post('/update-all', (req, res) => {
     var PIC_NIPPOS = req.body.PIC_NIPPOS;
     // const { TELEPON } = req.body.TELEPON;
     var PORT = req.body.PORT;
-    var NAMA_STATUS =  Number(req.body.NAMA_STATUS);
-    // const { TANGGAL_LIVE } = req.body.TANGGAL_LIVE;
-    // const { TANGGAL_DEPLOY } = req.body.TANGGAL_DEPLOY;
-    // const { TANGGAL_AKHIR_UPDATE } = req.body.TANGGAL_AKHIR_UPDATE;
-    // const { TANGGAL_TUTUP } = req.body.TANGGAL_TUTUP;
-    // const { ID_ACCOUNT } = req.body.ID_ACCOUNT;
-    // const { JENIS_AKUN } = req.body.JENIS_AKUN;
-    // const { USERNAME } = req.body.USERNAME;
-    // const { PASS } = req.body.PASS;
-    // const { EXP_DATE_PASSWORD } = req.body.EXP_DATE_PASSWORD;
-    // console.log('Received ID:', id);
+    var NAMA_STATUS = Number(req.body.NAMA_STATUS);
+
+    var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
+    var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
+    var TANGGAL_DEPLOY = req.body.TANGGAL_DEPLOY;
+    var TANGGAL_AKHIR_UPDATE = req.body.TANGGAL_AKHIR_UPDATE;
+    var TANGGAL_TUTUP = req.body.TANGGAL_TUTUP;
+
+    var ID_ACCOUNT = req.body.ID_ACCOUNT;
+    var JENIS_AKUN = req.body.JENIS_AKUN;
+    var USERNAME = req.body.USERNAME;
+    var PASS = req.body.PASS;
+    var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
+    var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT)
+    console.log('Received ID:', ID_ACCOUNT);
+    console.log('Received ID:', JENIS_AKUN);
+    console.log('Received ID:', USERNAME);
+    console.log('Received ID:', PASS);
+    console.log('Received ID:', typeof(EXP_DATE_PASSWORD[0]));
+    console.log('Received ID:', typeof(TANGGAL_LIVE));
+    console.log('Received ID:',LENGTH_ACCOUNT);
     if (err) {
       console.error('Error occurred:', err);
       res.status(500).send('Database connection error');
       return;
     }
 
-    const query = `UPDATE produk_detail SET
+    const query1 = `UPDATE produk_detail SET
     PIC_NIPPOS = '${PIC_NIPPOS}',
     PENEMPATAN = ${PENEMPATAN},
     AKSES = ${AKSES},
@@ -593,29 +603,76 @@ app.post('/update-all', (req, res) => {
     PORT = '${PORT}',
     FRAMEWORK = '${FRAMEWORK}',
     VER_FRAMEWORK = '${VER_FRAMEWORK}',
-    JENIS_DATABASE = '${JENIS_DATABASE}'
-    WHERE PRODUK_ID = ${ID_PRODUK}`
+    JENIS_DATABASE = '${JENIS_DATABASE}',
+    TANGGAL_LIVE = CAST(NULLIF('${TANGGAL_LIVE}', '') AS DATE),
+    TANGGAL_AKHIR_UPDATE = CAST(NULLIF('${TANGGAL_AKHIR_UPDATE}', '') AS DATE),
+    TANGGAL_TUTUP = CAST(NULLIF('${TANGGAL_TUTUP}', '') AS DATE),
+    TANGGAL_DEPLOY = CAST(NULLIF('${TANGGAL_DEPLOY}', '') AS DATE)
+    WHERE PRODUK_ID = ${ID_PRODUK};`
 
-    // const query = `UPDATE produk SET 
-    //     NAMA_PRODUK = '${NAMA_PRODUK}',
-    //     DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
-    //     WHERE ID_PRODUK = ${ID_PRODUK}`
+    const query2 = `UPDATE produk SET 
+    NAMA_PRODUK = '${NAMA_PRODUK}',
+    DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
+    WHERE ID_PRODUK = ${ID_PRODUK};`
 
-    // TANGGAL_LIVE = '${TANGGAL_LIVE}',
-    // TANGGAL_AKHIR_UPDATE = '${TANGGAL_AKHIR_UPDATE}',
-    // TANGGAL_TUTUP = '${TANGGAL_TUTUP}',
-    // TANGGAL_DEPLOY = '${TANGGAL_DEPLOY}',
-    console.log('Received ID:', query);
-    conn.query(query, (err, results) => {
+    const query3 = `UPDATE spec_server SET
+    WEB_SERVER_ID = ${WEB_SERVER_ID},
+    IP_SERVER = '${IP_SERVER}',
+    CPU = '${CPU}',
+    RAM = '${RAM}',
+    STORAGE = '${STORAGE}'
+    WHERE ID_SPEC_SERVER = ${SERVER};
+    `
+
+    let query4 = '';
+    for (let i = 0; i < LENGTH_ACCOUNT; i++) {
+      query4 += `UPDATE account SET
+        JENIS_AKUN = '${JENIS_AKUN[i]}',
+        USERNAME = '${USERNAME[i]}',
+        PASS = '${PASS[i]}',
+        EXP_DATE_PASSWORD = '${EXP_DATE_PASSWORD[i]}'
+        WHERE ID_ACCOUNT = ${ID_ACCOUNT[i]};\n`;
+    }
+
+
+    // console.log('Received ID:', query);
+    conn.query(query1, (err, results) => {
       if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Query execution error', err);
-      } else {
-        // console.log('Query Results:', results);
-        res.json(results);
+        console.error('Error executing query1:', err);
+        conn.close();
+        res.status(500).send('Query1 execution error');
+        return;
       }
 
-      conn.close();
+      conn.query(query2, (err, results) => {
+        if (err) {
+          console.error('Error executing query2:', err);
+          conn.close();
+          res.status(500).send('Query2 execution error');
+          return;
+        }
+
+        conn.query(query3, (err, results) => {
+          if (err) {
+            console.error('Error executing query3:', err);
+            conn.close();
+            res.status(500).send('Query3 execution error');
+            return;
+          }
+
+          conn.query(query4, (err, results) => {
+            if (err) {
+              console.error('Error executing query3:', err);
+              conn.close();
+              res.status(500).send('Query3 execution error');
+              return;
+            }
+
+            res.json({ success: true });
+            conn.close();
+          });
+        });
+      });
     });
 
     // conn.query(query2, (err, results) => {
