@@ -915,12 +915,12 @@ app.post('/new-produk', (req, res) => {
       return;
     }
 
-    const query = `INSERT INTO produk(FLAG_STATUS, NAMA_PRODUK, DESKRIPSI_PRODUK)
+    const query1 = `INSERT INTO produk(FLAG_STATUS, NAMA_PRODUK, DESKRIPSI_PRODUK)
     VALUES (${FLAG_STATUS},'${NAMA_PRODUK}','${DESKRIPSI_PRODUK}');`
 
 
-    console.log('Received ID:', query);
-    conn.query(query, (err, results) => {
+    console.log('Received ID:', query1);
+    conn.query(query1, (err, results) => {
       if (err) {
         console.error('Error executing query1:', err);
         conn.close();
@@ -928,32 +928,36 @@ app.post('/new-produk', (req, res) => {
         return;
       }
 
-      const produkId = `SELECT TOP 1 ID_PRODUK
-      FROM produk
-      ORDER BY ID_PRODUK DESC;
-      `;
+      const query2 = `INSERT INTO spec_server (WEB_SERVER_ID, IP_SERVER, CPU, RAM, STORAGE)
+        VALUES (${SERVER}, '${IP_SERVER}', '${CPU}', '${RAM}', '${STORAGE}')`
 
-      conn.query(produkId, (err, results) => {
+      conn.query(query2, (err, results) => {
         if (err) {
           console.error('Error executing query2:', err);
           conn.close();
           res.status(500).send('Query2 execution error');
           return;
         }
-        
-        const produkId = results[0].ID_PRODUK;
 
 
 
-        const queryy = `INSERT INTO produk_detail
-      (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, SERVER, BUSINESS_OWNER, 
-        WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE)
-      VALUES (${produkId},'${PIC_NIPPOS}',${PENEMPATAN},${AKSES},${DEVELOPER},${SERVER},'${BUSINESS_OWNER}',
-      '${WAKTU_OPERASIONAL}','${URL}',${PORT},'${FRAMEWORK}','${VER_FRAMEWORK}','${JENIS_DATABASE}');`
+        const produkId = `WITH LastProduct AS (
+        SELECT TOP 1 ID_PRODUK
+        FROM produk
+        ORDER BY ID_PRODUK DESC
+    ),
+    LastSpecServer AS (
+        SELECT TOP 1 ID_SPEC_SERVER
+        FROM spec_server
+        ORDER BY ID_SPEC_SERVER DESC
+    )
+    SELECT 
+        (SELECT ID_PRODUK FROM LastProduct) AS ID_PRODUK,
+        (SELECT ID_SPEC_SERVER FROM LastSpecServer) AS ID_SPEC_SERVER;
+    ;
+      `;
 
-        console.log('Received ID2:', queryy);
-
-        conn.query(queryy, (err, results) => {
+        conn.query(produkId, (err, results) => {
           if (err) {
             console.error('Error executing query2:', err);
             conn.close();
@@ -961,8 +965,34 @@ app.post('/new-produk', (req, res) => {
             return;
           }
 
-          res.json({ success: true });
-          conn.close();
+          const produkId = results[0].ID_PRODUK;
+          const specId = results[0].ID_SPEC_SERVER;
+
+
+
+
+
+          const query3 = `INSERT INTO produk_detail
+      (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, SERVER, BUSINESS_OWNER, 
+        WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE, 
+        TANGGAL_LIVE, TANGGAL_AKHIR_UPDATE, TANGGAL_TUTUP, TANGGAL_DEPLOY)
+      VALUES (${produkId},'${PIC_NIPPOS}',${PENEMPATAN},${AKSES},${DEVELOPER},${specId},'${BUSINESS_OWNER}',
+      '${WAKTU_OPERASIONAL}','${URL}',${PORT},'${FRAMEWORK}','${VER_FRAMEWORK}','${JENIS_DATABASE}', 
+      '${TANGGAL_LIVE}','${TANGGAL_AKHIR_UPDATE}','${TANGGAL_TUTUP}','${TANGGAL_DEPLOY}');`
+
+          console.log('Received ID2:', query3);
+
+          conn.query(query3, (err, results) => {
+            if (err) {
+              console.error('Error executing query2:', err);
+              conn.close();
+              res.status(500).send('Query2 execution error');
+              return;
+            }
+
+            res.json({ success: true });
+            conn.close();
+          });
         });
       });
     });
