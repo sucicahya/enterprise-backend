@@ -689,6 +689,317 @@ app.post('/update-all', (req, res) => {
   });
 });
 
+
+
+
+
+app.post('/new-penempatan', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    const { NEW_NAMA_PENEMPATAN } = req.body;
+    // console.log('Received NEW_NAMA_PENEMPATAN:', NEW_NAMA_PENEMPATAN);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO penempatan(NAMA_PENEMPATAN) VALUES ('${NEW_NAMA_PENEMPATAN}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});`
+`
+app.post('/new-akses', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    const { NEW_NAMA_AKSES } = req.body;
+    // console.log('Received NEW_NAMA_AKSES:', NEW_NAMA_AKSES);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO akses(NAMA_AKSES) VALUES ('${NEW_NAMA_AKSES}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/new-webserver', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    const { NEW_NAMA_WEB_SERVER } = req.body;
+    // console.log('Received NEW_NAMA_WEB_SERVER:', NEW_NAMA_WEB_SERVER);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO web_server(NAMA_WEB_SERVER) VALUES ('${NEW_NAMA_WEB_SERVER}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/new-developer', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    const { NEW_NAMA_DEVELOPER } = req.body;
+    // console.log('Received NEW_NAMA_DEVELOPER:', NEW_NAMA_DEVELOPER);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO developer(NAMA_DEVELOPER) VALUES ('${NEW_NAMA_DEVELOPER}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/new-pic', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    var NEW_NIPPOS_PIC = req.body.NEW_NIPPOS_PIC;
+    var NEW_NAMA_PIC = req.body.NEW_NAMA_PIC;
+    var NEW_TELEPON_PIC = req.body.NEW_TELEPON_PIC;
+    var NEW_USERNAME_PIC = req.body.NEW_USERNAME_PIC;
+    var NEW_PASS_PIC = req.body.NEW_PASS_PIC;
+    console.log('Received NEW_NAMA_PIC:', NEW_NAMA_PIC);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO karyawan(NIPPOS, NAMA, TELEPON, USERNAME, PASS) 
+    VALUES ('${NEW_NIPPOS_PIC}', '${NEW_NAMA_PIC}', '${NEW_TELEPON_PIC}', '${NEW_USERNAME_PIC}', '${NEW_PASS_PIC}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/new-status', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    const { NEW_NAMA_STATUS } = req.body;
+    // console.log('Received NEW_NAMA_STATUS:', NEW_NAMA_STATUS);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    INSERT INTO status(NAMA_STATUS) VALUES ('${NEW_NAMA_STATUS}');`;
+    console.log("query", query)
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.post('/new-produk', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    console.log('pppp', req.body)
+    console.log('pppp', typeof (ID_PRODUK))
+    console.log('pppp', typeof (NAMA_PRODUK))
+    console.log('pppp', typeof (DESKRIPSI_PRODUK))
+    
+    var ID_PRODUK = Number(req.body.ID_PRODUK); 
+    var NAMA_PRODUK = req.body.NAMA_PRODUK;
+    var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
+    var URL = req.body.URL;
+    var IP_SERVER = req.body.IP_SERVER;
+    var PENEMPATAN = Number(req.body.PENEMPATAN);
+    var AKSES = Number(req.body.AKSES);
+    var CPU = req.body.CPU;
+    var RAM = req.body.RAM;
+    var STORAGE = req.body.STORAGE;
+    var SERVER = Number(req.body.SERVER);
+    var JENIS_DATABASE = req.body.JENIS_DATABASE;
+    var FRAMEWORK = req.body.FRAMEWORK;
+    var VER_FRAMEWORK = req.body.VER_FRAMEWORK;
+    var WAKTU_OPERASIONAL = req.body.WAKTU_OPERASIONAL;
+    var DEVELOPER = req.body.DEVELOPER;
+    var BUSINESS_OWNER = req.body.BUSINESS_OWNER;
+    var PIC_NIPPOS = req.body.PIC_NIPPOS;
+    // const { TELEPON } = req.body.TELEPON;
+    var PORT = req.body.PORT;
+    var NAMA_STATUS = Number(req.body.NAMA_STATUS);
+
+    var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
+    var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
+    var TANGGAL_DEPLOY = req.body.TANGGAL_DEPLOY;
+    var TANGGAL_AKHIR_UPDATE = req.body.TANGGAL_AKHIR_UPDATE;
+    var TANGGAL_TUTUP = req.body.TANGGAL_TUTUP;
+
+    var ID_ACCOUNT = req.body.ID_ACCOUNT;
+    var JENIS_AKUN = req.body.JENIS_AKUN;
+    var USERNAME = req.body.USERNAME;
+    var PASS = req.body.PASS;
+    var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
+    var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT)
+    console.log('Received ID:', ID_ACCOUNT);
+    console.log('Received ID:', JENIS_AKUN);
+    console.log('Received ID:', USERNAME);
+    console.log('Received ID:', PASS);
+    console.log('Received ID:', typeof(EXP_DATE_PASSWORD[0]));
+    console.log('Received ID:', typeof(TANGGAL_LIVE));
+    console.log('Received ID:',LENGTH_ACCOUNT);
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query1 = `UPDATE produk_detail SET
+    PIC_NIPPOS = '${PIC_NIPPOS}',
+    PENEMPATAN = ${PENEMPATAN},
+    AKSES = ${AKSES},
+    DEVELOPER = ${DEVELOPER},
+    SERVER = ${SERVER},
+    BUSINESS_OWNER = '${BUSINESS_OWNER}',
+    WAKTU_OPERASIONAL = '${WAKTU_OPERASIONAL}',
+    URL = '${URL}',
+    PORT = '${PORT}',
+    FRAMEWORK = '${FRAMEWORK}',
+    VER_FRAMEWORK = '${VER_FRAMEWORK}',
+    JENIS_DATABASE = '${JENIS_DATABASE}',
+    TANGGAL_LIVE = CAST(NULLIF('${TANGGAL_LIVE}', '') AS DATE),
+    TANGGAL_AKHIR_UPDATE = CAST(NULLIF('${TANGGAL_AKHIR_UPDATE}', '') AS DATE),
+    TANGGAL_TUTUP = CAST(NULLIF('${TANGGAL_TUTUP}', '') AS DATE),
+    TANGGAL_DEPLOY = CAST(NULLIF('${TANGGAL_DEPLOY}', '') AS DATE)
+    WHERE PRODUK_ID = ${ID_PRODUK};`
+
+    const query2 = `UPDATE produk SET 
+    NAMA_PRODUK = '${NAMA_PRODUK}',
+    DESKRIPSI_PRODUK = '${DESKRIPSI_PRODUK}' 
+    WHERE ID_PRODUK = ${ID_PRODUK};`
+
+    const query3 = `UPDATE spec_server SET
+    WEB_SERVER_ID = ${WEB_SERVER_ID},
+    IP_SERVER = '${IP_SERVER}',
+    CPU = '${CPU}',
+    RAM = '${RAM}',
+    STORAGE = '${STORAGE}'
+    WHERE ID_SPEC_SERVER = ${SERVER};
+    `
+
+    let query4 = '';
+    for (let i = 0; i < LENGTH_ACCOUNT; i++) {
+      query4 += `UPDATE account SET
+        JENIS_AKUN = '${JENIS_AKUN[i]}',
+        USERNAME = '${USERNAME[i]}',
+        PASS = '${PASS[i]}',
+        EXP_DATE_PASSWORD = '${EXP_DATE_PASSWORD[i]}'
+        WHERE ID_ACCOUNT = ${ID_ACCOUNT[i]};\n`;
+    }
+
+
+    // console.log('Received ID:', query);
+    // conn.query(query1, (err, results) => {
+    //   if (err) {
+    //     console.error('Error executing query1:', err);
+    //     conn.close();
+    //     res.status(500).send('Query1 execution error');
+    //     return;
+    //   }
+
+    //   conn.query(query2, (err, results) => {
+    //     if (err) {
+    //       console.error('Error executing query2:', err);
+    //       conn.close();
+    //       res.status(500).send('Query2 execution error');
+    //       return;
+    //     }
+
+    //     conn.query(query3, (err, results) => {
+    //       if (err) {
+    //         console.error('Error executing query3:', err);
+    //         conn.close();
+    //         res.status(500).send('Query3 execution error');
+    //         return;
+    //       }
+
+    //       conn.query(query4, (err, results) => {
+    //         if (err) {
+    //           console.error('Error executing query3:', err);
+    //           conn.close();
+    //           res.status(500).send('Query3 execution error');
+    //           return;
+    //         }
+
+    //         res.json({ success: true });
+    //         conn.close();
+    //       });
+    //     });
+    //   });
+    // });
+  });
+});
+
 // Start Server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
