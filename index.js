@@ -920,7 +920,7 @@ app.post('/new-produk', (req, res) => {
 
 
     console.log('Received ID:', query1);
-    conn.query(query1, (err, results) => {
+    conn.query(query1, (err, resultsq1) => {
       if (err) {
         console.error('Error executing query1:', err);
         conn.close();
@@ -931,7 +931,7 @@ app.post('/new-produk', (req, res) => {
       const query2 = `INSERT INTO spec_server (WEB_SERVER_ID, IP_SERVER, CPU, RAM, STORAGE)
         VALUES (${SERVER}, '${IP_SERVER}', '${CPU}', '${RAM}', '${STORAGE}')`
 
-      conn.query(query2, (err, results) => {
+      conn.query(query2, (err, resultsq2) => {
         if (err) {
           console.error('Error executing query2:', err);
           conn.close();
@@ -957,7 +957,7 @@ app.post('/new-produk', (req, res) => {
     ;
       `;
 
-        conn.query(produkId, (err, results) => {
+        conn.query(produkId, (err, resultsp1) => {
           if (err) {
             console.error('Error executing query2:', err);
             conn.close();
@@ -965,8 +965,8 @@ app.post('/new-produk', (req, res) => {
             return;
           }
 
-          const produkId = results[0].ID_PRODUK;
-          const specId = results[0].ID_SPEC_SERVER;
+          const produkId = resultsp1[0].ID_PRODUK;
+          const specId = resultsp1[0].ID_SPEC_SERVER;
 
 
 
@@ -982,7 +982,7 @@ app.post('/new-produk', (req, res) => {
 
           console.log('Received ID2:', query3);
 
-          conn.query(query3, (err, results) => {
+          conn.query(query3, (err, resultsq3) => {
             if (err) {
               console.error('Error executing query2:', err);
               conn.close();
@@ -990,8 +990,44 @@ app.post('/new-produk', (req, res) => {
               return;
             }
 
-            res.json({ success: true });
-            conn.close();
+
+
+
+
+            const produkIdd = `SELECT TOP 1 ID_PRODUK
+          FROM produk
+          ORDER BY ID_PRODUK DESC
+      ;
+        `;
+
+            conn.query(produkIdd, (err, resultsp2) => {
+              if (err) {
+                console.error('Error executing query2:', err);
+                conn.close();
+                res.status(500).send('Query2 execution error');
+                return;
+              }
+
+              const produkId = resultsp2[0].ID_PRODUK;
+
+              let query4 = ''
+              for (let i = 0; i < USERNAME.length; i++) {
+                query4 += `INSERT INTO account(PRODUK_ID, USERNAME, PASS, EXP_DATE_PASSWORD, JENIS_AKUN, FLAG_STATUS)
+              VALUES(${produkId}, '${USERNAME[i]}', '${PASS[i]}', '${EXP_DATE_PASSWORD[i]}', '${JENIS_AKUN[i]}', 1)`
+                console.log('Received ID2:', query4);
+              }
+              conn.query(query4, (err, resultsq4) => {
+                if (err) {
+                  console.error('Error executing query2:', err);
+                  conn.close();
+                  res.status(500).send('Query2 execution error');
+                  return;
+                }
+
+                res.json({ success: true });
+                conn.close();
+              });
+            });
           });
         });
       });
