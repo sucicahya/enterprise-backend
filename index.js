@@ -248,6 +248,34 @@ app.get('/produk-masuk', (req, res) => {
   });
 });
 
+app.get('/jenis-database', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    SELECT produk_detail.JENIS_DATABASE AS db, 
+COUNT(produk.NAMA_PRODUK) AS total 
+FROM produk_detail  
+LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
+GROUP BY produk_detail.JENIS_DATABASE;`;
+
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
 app.get('/pilih-penempatan', (req, res) => {
   sql.open(connectionString, (err, conn) => {
     if (err) {
@@ -578,6 +606,7 @@ app.post('/update-all', (req, res) => {
     var PASS = req.body.PASS;
     var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
     var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT)
+    var TANGGAL_UPDATE = new Date().toISOString().split('T')[0];
     console.log('Received ID:', ID_ACCOUNT);
     console.log('Received ID:', JENIS_AKUN);
     console.log('Received ID:', USERNAME);
@@ -630,7 +659,8 @@ app.post('/update-all', (req, res) => {
         JENIS_AKUN = '${JENIS_AKUN[i]}',
         USERNAME = '${USERNAME[i]}',
         PASS = '${PASS[i]}',
-        EXP_DATE_PASSWORD = '${EXP_DATE_PASSWORD[i]}'
+        EXP_DATE_PASSWORD = '${EXP_DATE_PASSWORD[i]}',
+        TANGGAL_UPDATE = '${TANGGAL_UPDATE}'
         WHERE ID_ACCOUNT = ${ID_ACCOUNT[i]};\n`;
     }
 
@@ -870,38 +900,40 @@ app.post('/new-produk', (req, res) => {
     // var ID_PRODUK = Number(req.body.ID_PRODUK); 
     var NAMA_PRODUK = req.body.NAMA_PRODUK;
     var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
-    var URL = req.body.URL;
-    var IP_SERVER = req.body.IP_SERVER;
-    var PENEMPATAN = Number(req.body.PENEMPATAN);
-    var AKSES = Number(req.body.AKSES);
-    var CPU = req.body.CPU;
-    var RAM = req.body.RAM;
-    var STORAGE = req.body.STORAGE;
-    var SERVER = Number(req.body.SERVER);
-    var JENIS_DATABASE = req.body.JENIS_DATABASE;
-    var FRAMEWORK = req.body.FRAMEWORK;
-    var VER_FRAMEWORK = req.body.VER_FRAMEWORK;
-    var WAKTU_OPERASIONAL = req.body.WAKTU_OPERASIONAL;
-    var DEVELOPER = req.body.DEVELOPER;
-    var BUSINESS_OWNER = req.body.BUSINESS_OWNER;
-    var PIC_NIPPOS = req.body.PIC_NIPPOS;
+    var URL = Array.isArray(req.body.URL) && req.body.URL.length === 0 ? null : JSON.stringify(req.body.URL).replace(/"/g, "'");
+    var IP_SERVER = Array.isArray(req.body.IP_SERVER) && req.body.IP_SERVER.length === 0 ? null : JSON.stringify(req.body.IP_SERVER).replace(/"/g, "'");
+    var PENEMPATAN = Array.isArray(req.body.PENEMPATAN) && req.body.PENEMPATAN.length === 0 ? null : Number(req.body.PENEMPATAN);
+    var AKSES = Array.isArray(req.body.AKSES) && req.body.AKSES.length === 0 ? null : Number(req.body.AKSES);
+    var CPU = Array.isArray(req.body.CPU) && req.body.CPU.length === 0 ? null : JSON.stringify(req.body.CPU).replace(/"/g, "'");
+    var RAM = Array.isArray(req.body.RAM) && req.body.RAM.length === 0 ? null : JSON.stringify(req.body.RAM).replace(/"/g, "'");
+    var STORAGE = Array.isArray(req.body.STORAGE) && req.body.STORAGE.length === 0 ? null : JSON.stringify(req.body.STORAGE).replace(/"/g, "'");
+    var SERVER = Array.isArray(req.body.SERVER) && req.body.SERVER.length === 0 ? null : Number(req.body.SERVER);
+    var JENIS_DATABASE = Array.isArray(req.body.JENIS_DATABASE) && req.body.JENIS_DATABASE.length === 0 ? null : JSON.stringify(req.body.JENIS_DATABASE).replace(/"/g, "'");
+    var FRAMEWORK = Array.isArray(req.body.FRAMEWORK) && req.body.FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.FRAMEWORK).replace(/"/g, "'");
+    var VER_FRAMEWORK = Array.isArray(req.body.VER_FRAMEWORK) && req.body.VER_FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.VER_FRAMEWORK).replace(/"/g, "'");
+    var WAKTU_OPERASIONAL = Array.isArray(req.body.WAKTU_OPERASIONAL) && req.body.WAKTU_OPERASIONAL.length === 0 ? null : JSON.stringify(req.body.WAKTU_OPERASIONAL).replace(/"/g, "'");
+    var DEVELOPER = Array.isArray(req.body.DEVELOPER) && req.body.DEVELOPER.length === 0 ? null : Number(req.body.DEVELOPER);
+    var BUSINESS_OWNER = Array.isArray(req.body.BUSINESS_OWNER) && req.body.BUSINESS_OWNER.length === 0 ? null : JSON.stringify(req.body.BUSINESS_OWNER).replace(/"/g, "'");
+    var PIC_NIPPOS = Array.isArray(req.body.PIC_NIPPOS) && req.body.PIC_NIPPOS.length === 0 ? null : JSON.stringify(req.body.PIC_NIPPOS).replace(/"/g, "'");
     // const { TELEPON } = req.body.TELEPON;
-    var PORT = req.body.PORT;
+    var PORT = Array.isArray(req.body.PORT) && req.body.PORT.length === 0 ? null : req.body.PORT;
     var NAMA_STATUS = Number(req.body.NAMA_STATUS);
     var FLAG_STATUS = Number(req.body.FLAG_STATUS);
 
     var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
-    var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
-    var TANGGAL_DEPLOY = req.body.TANGGAL_DEPLOY;
-    var TANGGAL_AKHIR_UPDATE = req.body.TANGGAL_AKHIR_UPDATE;
-    var TANGGAL_TUTUP = req.body.TANGGAL_TUTUP;
+    var TANGGAL_LIVE = Array.isArray(req.body.TANGGAL_LIVE) && req.body.TANGGAL_LIVE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_LIVE).replace(/"/g, "'");
+    var TANGGAL_DEPLOY = Array.isArray(req.body.TANGGAL_DEPLOY) && req.body.TANGGAL_DEPLOY.length === 0 ? null : JSON.stringify(req.body.TANGGAL_DEPLOY).replace(/"/g, "'");
+    var TANGGAL_AKHIR_UPDATE = Array.isArray(req.body.TANGGAL_AKHIR_UPDATE) && req.body.TANGGAL_AKHIR_UPDATE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_AKHIR_UPDATE).replace(/"/g, "'");
+    var TANGGAL_TUTUP = Array.isArray(req.body.TANGGAL_TUTUP) && req.body.TANGGAL_TUTUP.length === 0 ? null : JSON.stringify(req.body.TANGGAL_TUTUP).replace(/"/g, "'");
 
     var ID_ACCOUNT = req.body.ID_ACCOUNT;
     var JENIS_AKUN = req.body.JENIS_AKUN;
     var USERNAME = req.body.USERNAME;
+    var USERNAMELength = req.body.USERNAME;
     var PASS = req.body.PASS;
     var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
-    var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT)
+    var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT);
+    var TANGGAL_CREATE = new Date().toISOString().split('T')[0];
     // console.log('Received ID:', ID_ACCOUNT);
     // console.log('Received ID:', JENIS_AKUN);
     // console.log('Received ID:', USERNAME);
@@ -916,7 +948,7 @@ app.post('/new-produk', (req, res) => {
     }
 
     const query1 = `INSERT INTO produk(FLAG_STATUS, NAMA_PRODUK, DESKRIPSI_PRODUK)
-    VALUES (${FLAG_STATUS},'${NAMA_PRODUK}','${DESKRIPSI_PRODUK}');`
+    VALUES (1,'${NAMA_PRODUK}','${DESKRIPSI_PRODUK}');`
 
 
     console.log('Received ID:', query1);
@@ -929,8 +961,9 @@ app.post('/new-produk', (req, res) => {
       }
 
       const query2 = `INSERT INTO spec_server (WEB_SERVER_ID, IP_SERVER, CPU, RAM, STORAGE)
-        VALUES (${SERVER}, '${IP_SERVER}', '${CPU}', '${RAM}', '${STORAGE}')`
+        VALUES (${SERVER}, ${IP_SERVER}, ${CPU}, ${RAM}, ${STORAGE})`
 
+      console.log('Received ID2:', query2);
       conn.query(query2, (err, resultsq2) => {
         if (err) {
           console.error('Error executing query2:', err);
@@ -976,11 +1009,11 @@ app.post('/new-produk', (req, res) => {
       (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, SERVER, BUSINESS_OWNER, 
         WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE, 
         TANGGAL_LIVE, TANGGAL_AKHIR_UPDATE, TANGGAL_TUTUP, TANGGAL_DEPLOY)
-      VALUES (${produkId},'${PIC_NIPPOS}',${PENEMPATAN},${AKSES},${DEVELOPER},${specId},'${BUSINESS_OWNER}',
-      '${WAKTU_OPERASIONAL}','${URL}',${PORT},'${FRAMEWORK}','${VER_FRAMEWORK}','${JENIS_DATABASE}', 
-      '${TANGGAL_LIVE}','${TANGGAL_AKHIR_UPDATE}','${TANGGAL_TUTUP}','${TANGGAL_DEPLOY}');`
+      VALUES (${produkId},${PIC_NIPPOS},${PENEMPATAN},${AKSES},${DEVELOPER},${specId},${BUSINESS_OWNER},
+      ${WAKTU_OPERASIONAL},${URL},${PORT},${FRAMEWORK},${VER_FRAMEWORK},${JENIS_DATABASE}, 
+      ${TANGGAL_LIVE},${TANGGAL_AKHIR_UPDATE},${TANGGAL_TUTUP},${TANGGAL_DEPLOY});`
 
-          console.log('Received ID2:', query3);
+          console.log('Received ID3:', query3);
 
           conn.query(query3, (err, resultsq3) => {
             if (err) {
@@ -1012,9 +1045,9 @@ app.post('/new-produk', (req, res) => {
 
               let query4 = ''
               for (let i = 0; i < USERNAME.length; i++) {
-                query4 += `INSERT INTO account(PRODUK_ID, USERNAME, PASS, EXP_DATE_PASSWORD, JENIS_AKUN, FLAG_STATUS)
-              VALUES(${produkId}, '${USERNAME[i]}', '${PASS[i]}', '${EXP_DATE_PASSWORD[i]}', '${JENIS_AKUN[i]}', 1)`
-                console.log('Received ID2:', query4);
+                query4 += `INSERT INTO account(PRODUK_ID, USERNAME, PASS, EXP_DATE_PASSWORD, JENIS_AKUN, FLAG_STATUS, TANGGAL_CREATE)
+              VALUES(${produkId}, '${USERNAME[i]}', '${PASS[i]}', '${EXP_DATE_PASSWORD[i]}', '${JENIS_AKUN[i]}', 1, '${TANGGAL_CREATE}')`
+                console.log('Received ID4:', query4);
               }
               conn.query(query4, (err, resultsq4) => {
                 if (err) {
