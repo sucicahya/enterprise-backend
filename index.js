@@ -15,10 +15,13 @@
 
 
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const sql = require('msnodesqlv8');
 const cors = require('cors');
 const app = express();
 const port = 5000;
+const md5 = require('md5');
 
 const connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=40005-MP1PWS22;Database=enterprise;Trusted_Connection=yes;`;
 
@@ -45,7 +48,93 @@ const connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=40005-MP
 app.use(cors());
 app.use(express.json());
 
+const jwtkey= "secret";
+
+const saltRounds = 12;
+
+// Fungsi untuk meng-hash password
+const hashPassword = async (password) => {
+  try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    throw new Error('Error hashing password');
+  }
+};
+
+const comparePassword = async (plainPassword, hashedPassword) => {
+  try {
+    const match = await bcrypt.compare(plainPassword, hashedPassword);
+    return match;
+  } catch (error) {
+    console.error('Error comparing passwords:', error);
+    throw new Error('Error comparing passwords');
+  }
+};
+
+
 // API Endpoint
+app.post('/login-sim',(req, res) => {
+  const { USERNAME, PASS } = req.body;
+
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `SELECT * FROM karyawan WHERE USERNAME = '${USERNAME}';`;
+
+    conn.query(query, async (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        conn.close();
+        res.status(500).send('Query execution error');
+        return;
+      }
+
+      if (results.length === 0) {
+        conn.close();
+        res.status(401).send('Invalid username or password');
+        return;
+      }
+
+      const hashedPassword = results[0].PASS; // Password yang ter-hash dari database
+
+      try {
+        const match = await bcrypt.compare(PASS, hashedPassword);
+        if (match) {
+          const payload = {
+            userId: results[0].ID,
+            username: results[0].USERNAME
+          };
+
+          const options = {
+            expiresIn: '1h' // Token berlaku selama 1 jam
+          };
+
+          const token = jwt.sign(payload, jwtkey, options);
+
+          res.json({
+            success: true,
+            token: token
+          });
+        } else {
+          res.status(401).send('Invalid username or password');
+        }
+      } catch (error) {
+        console.error('Error comparing passwords:', error);
+        res.status(500).send('Error comparing passwords');
+      }
+
+      conn.close();
+    });
+  });
+});
+
+
 app.get('/main-table', (req, res) => {
   sql.open(connectionString, (err, conn) => {
     if (err) {
