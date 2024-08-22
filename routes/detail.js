@@ -234,8 +234,6 @@ app.post('/full-detail', (req, res) => {
     produk_detail.TANGGAL_AKHIR_UPDATE, 
     produk_detail.TANGGAL_TUTUP, 
     produk_detail.TANGGAL_DEPLOY, 
-    produk_detail.BA_DEPLOY, 
-    produk_detail.REQ_DEPLOY, 
 
     spec_server.ID_SPEC_SERVER,
     spec_server.WEB_SERVER_ID,
@@ -284,12 +282,18 @@ app.post('/full-account', (req, res) => {
         }
 
         const query = `
-    SELECT account.ID_ACCOUNT, 
+    SELECT account.ID_ACCOUNT,
+    account.SPEC_SERVER_ID, 
     account.USERNAME, 
     account.PASS, 
+    account.TANGGAL_CREATE,
+    account.TANGGAL_UPDATE,
     account.EXP_DATE_PASSWORD, 
-    account.JENIS_AKUN FROM account 
-    WHERE account.PRODUK_ID = ${id};`;
+    account.JENIS_AKUN 
+    FROM account
+    INNER JOIN spec_server ON spec_server.ID_SPEC_SERVER = account.SPEC_SERVER_ID
+    INNER JOIN produk_detail ON spec_server.ID_SPEC_SERVER = produk_detail.SERVER 
+    WHERE produk_detail.PRODUK_ID = ${id};`;
         // console.log('Received ID:', query);
         conn.query(query, (err, results) => {
             if (err) {
