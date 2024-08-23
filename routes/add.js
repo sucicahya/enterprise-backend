@@ -372,23 +372,33 @@ app.post('/new-server', (req, res) => {
 
             const produkId = resultsp2[0].ID_PRODUK;
 
-            let query4 = ''
+            let queryCount = 0;  // Counter for successful queries
+            let hasErrorOccurred = false;  // Flag to check if an error has occurred
             for (let i = 0; i < IP_SERVER.length; i++) {
-                query4 += `INSERT INTO spec_server(WEB_SERVER_ID, PRODUK_DETAIL_ID, IP_SERVER, CPU, RAM, STORAGE)
-              VALUES(${SERVER[i]}, ${produkId}, '${IP_SERVER[i]}', '${CPU[i]}', '${RAM[i]}', '${STORAGE[i]}');`
+                const query4 = `INSERT INTO spec_server(WEB_SERVER_ID, PRODUK_DETAIL_ID, IP_SERVER, CPU, RAM, STORAGE)
+                                VALUES(${SERVER[i]}, ${produkId}, '${IP_SERVER[i]}', '${CPU[i]}', '${RAM[i]}', '${STORAGE[i]}');`;
                 console.log('Received ID4:', query4);
-            }
-            conn.query(query4, (err, resultsq4) => {
-                if (err) {
-                    console.error('Error executing query2:', err);
-                    conn.close();
-                    res.status(500).send('Query2 execution error');
-                    return;
-                }
 
-                res.json({ success: true });
-                conn.close();
-            });
+                conn.query(query4, (err, resultsq4) => {
+                    if (err) {
+                        console.error('Error executing insert query:', err);
+                        if (!hasErrorOccurred) {  // Only send error response once
+                            hasErrorOccurred = true;
+                            conn.close();
+                            res.status(500).send('Insert query execution error');
+                        }
+                        return;
+                    }
+
+                    queryCount++;
+
+                    // Check if all queries have been executed
+                    if (queryCount === IP_SERVER.length && !hasErrorOccurred) {
+                        res.json({ success: true });
+                        conn.close();
+                    }
+                });
+            }
         });
     });
 });
