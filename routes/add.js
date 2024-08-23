@@ -259,11 +259,13 @@ app.post('/new-produk', (req, res) => {
                 return;
             }
 
-            const query2 = `INSERT INTO spec_server (WEB_SERVER_ID, IP_SERVER, CPU, RAM, STORAGE)
-        VALUES (${SERVER}, ${IP_SERVER}, ${CPU}, ${RAM}, ${STORAGE})`
+            const produkIdd = `SELECT TOP 1 ID_PRODUK
+          FROM produk
+          ORDER BY ID_PRODUK DESC
+      ;
+        `;
 
-            console.log('Received ID2:', query2);
-            conn.query(query2, (err, resultsq2) => {
+            conn.query(produkIdd, (err, resultsp2) => {
                 if (err) {
                     console.error('Error executing query2:', err);
                     conn.close();
@@ -271,97 +273,121 @@ app.post('/new-produk', (req, res) => {
                     return;
                 }
 
+                const produkId = resultsp2[0].ID_PRODUK;
 
+                const query2 = `INSERT INTO produk_detail
+            (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, BUSINESS_OWNER, 
+              WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE, 
+              TANGGAL_LIVE, TANGGAL_AKHIR_UPDATE, TANGGAL_TUTUP, TANGGAL_DEPLOY)
+            VALUES (${produkId},${PIC_NIPPOS},${PENEMPATAN},${AKSES},${DEVELOPER},${BUSINESS_OWNER},
+            ${WAKTU_OPERASIONAL},${URL},${PORT},${FRAMEWORK},${VER_FRAMEWORK},${JENIS_DATABASE}, 
+            ${TANGGAL_LIVE},${TANGGAL_AKHIR_UPDATE},${TANGGAL_TUTUP},${TANGGAL_DEPLOY});`
 
-                const produkId = `WITH LastProduct AS (
-        SELECT TOP 1 ID_PRODUK
-        FROM produk
-        ORDER BY ID_PRODUK DESC
-    ),
-    LastSpecServer AS (
-        SELECT TOP 1 ID_SPEC_SERVER
-        FROM spec_server
-        ORDER BY ID_SPEC_SERVER DESC
-    )
-    SELECT 
-        (SELECT ID_PRODUK FROM LastProduct) AS ID_PRODUK,
-        (SELECT ID_SPEC_SERVER FROM LastSpecServer) AS ID_SPEC_SERVER;
-    ;
-      `;
-
-                conn.query(produkId, (err, resultsp1) => {
+                console.log('Received ID2:', query2);
+                conn.query(query2, (err, resultsq2) => {
                     if (err) {
                         console.error('Error executing query2:', err);
                         conn.close();
                         res.status(500).send('Query2 execution error');
                         return;
                     }
+                    res.json({ success: true });
+                    conn.close();
+                });
+            });
+        });
+    });
+});
 
-                    const produkId = resultsp1[0].ID_PRODUK;
-                    const specId = resultsp1[0].ID_SPEC_SERVER;
+app.post('/new-server', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        console.log('pppp', req.body)
+        // console.log('pppp', typeof (ID_PRODUK))
+        // console.log('pppp', typeof (NAMA_PRODUK))
+        // console.log('pppp', typeof (DESKRIPSI_PRODUK))
 
+        // var ID_PRODUK = Number(req.body.ID_PRODUK); 
+        // var NAMA_PRODUK = req.body.NAMA_PRODUK;
+        // var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
+        // var URL = Array.isArray(req.body.URL) && req.body.URL.length === 0 ? null : JSON.stringify(req.body.URL).replace(/"/g, "'");
+        var IP_SERVER = req.body.IP_SERVER;
+        // var PENEMPATAN = Array.isArray(req.body.PENEMPATAN) && req.body.PENEMPATAN.length === 0 ? null : Number(req.body.PENEMPATAN);
+        // var AKSES = Array.isArray(req.body.AKSES) && req.body.AKSES.length === 0 ? null : Number(req.body.AKSES);
+        var CPU = req.body.CPU;
+        var RAM = req.body.RAM;
+        var STORAGE = req.body.STORAGE;
+        var SERVER = req.body.SERVER;
+        // var JENIS_DATABASE = Array.isArray(req.body.JENIS_DATABASE) && req.body.JENIS_DATABASE.length === 0 ? null : JSON.stringify(req.body.JENIS_DATABASE).replace(/"/g, "'");
+        // var FRAMEWORK = Array.isArray(req.body.FRAMEWORK) && req.body.FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.FRAMEWORK).replace(/"/g, "'");
+        // var VER_FRAMEWORK = Array.isArray(req.body.VER_FRAMEWORK) && req.body.VER_FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.VER_FRAMEWORK).replace(/"/g, "'");
+        // var WAKTU_OPERASIONAL = Array.isArray(req.body.WAKTU_OPERASIONAL) && req.body.WAKTU_OPERASIONAL.length === 0 ? null : JSON.stringify(req.body.WAKTU_OPERASIONAL).replace(/"/g, "'");
+        // var DEVELOPER = Array.isArray(req.body.DEVELOPER) && req.body.DEVELOPER.length === 0 ? null : Number(req.body.DEVELOPER);
+        // var BUSINESS_OWNER = Array.isArray(req.body.BUSINESS_OWNER) && req.body.BUSINESS_OWNER.length === 0 ? null : JSON.stringify(req.body.BUSINESS_OWNER).replace(/"/g, "'");
+        // var PIC_NIPPOS = Array.isArray(req.body.PIC_NIPPOS) && req.body.PIC_NIPPOS.length === 0 ? null : JSON.stringify(req.body.PIC_NIPPOS).replace(/"/g, "'");
+        // const { TELEPON } = req.body.TELEPON;
+        // var PORT = Array.isArray(req.body.PORT) && req.body.PORT.length === 0 ? null : req.body.PORT;
+        // var NAMA_STATUS = Number(req.body.NAMA_STATUS);
+        // var FLAG_STATUS = Number(req.body.FLAG_STATUS);
 
+        // var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
+        // var TANGGAL_LIVE = Array.isArray(req.body.TANGGAL_LIVE) && req.body.TANGGAL_LIVE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_LIVE).replace(/"/g, "'");
+        // var TANGGAL_DEPLOY = Array.isArray(req.body.TANGGAL_DEPLOY) && req.body.TANGGAL_DEPLOY.length === 0 ? null : JSON.stringify(req.body.TANGGAL_DEPLOY).replace(/"/g, "'");
+        // var TANGGAL_AKHIR_UPDATE = Array.isArray(req.body.TANGGAL_AKHIR_UPDATE) && req.body.TANGGAL_AKHIR_UPDATE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_AKHIR_UPDATE).replace(/"/g, "'");
+        // var TANGGAL_TUTUP = Array.isArray(req.body.TANGGAL_TUTUP) && req.body.TANGGAL_TUTUP.length === 0 ? null : JSON.stringify(req.body.TANGGAL_TUTUP).replace(/"/g, "'");
 
+        // var ID_ACCOUNT = req.body.ID_ACCOUNT;
+        // var JENIS_AKUN = req.body.JENIS_AKUN;
+        // var USERNAME = req.body.USERNAME;
+        // var USERNAMELength = req.body.USERNAME;
+        // var PASS = req.body.PASS;
+        // var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
+        // var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT);
+        // var TANGGAL_CREATE = new Date().toISOString().split('T')[0];
+        // console.log('Received ID:', ID_ACCOUNT);
+        // console.log('Received ID:', JENIS_AKUN);
+        // console.log('Received ID:', USERNAME);
+        // console.log('Received ID:', PASS);
+        // console.log('Received ID:', typeof (EXP_DATE_PASSWORD[0]));
+        // console.log('Received ID:', typeof (TANGGAL_LIVE));
+        // console.log('Received ID:', LENGTH_ACCOUNT);
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
 
-
-                    const query3 = `INSERT INTO produk_detail
-      (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, SERVER, BUSINESS_OWNER, 
-        WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE, 
-        TANGGAL_LIVE, TANGGAL_AKHIR_UPDATE, TANGGAL_TUTUP, TANGGAL_DEPLOY)
-      VALUES (${produkId},${PIC_NIPPOS},${PENEMPATAN},${AKSES},${DEVELOPER},${specId},${BUSINESS_OWNER},
-      ${WAKTU_OPERASIONAL},${URL},${PORT},${FRAMEWORK},${VER_FRAMEWORK},${JENIS_DATABASE}, 
-      ${TANGGAL_LIVE},${TANGGAL_AKHIR_UPDATE},${TANGGAL_TUTUP},${TANGGAL_DEPLOY});`
-
-                    console.log('Received ID3:', query3);
-
-                    conn.query(query3, (err, resultsq3) => {
-                        if (err) {
-                            console.error('Error executing query2:', err);
-                            conn.close();
-                            res.status(500).send('Query2 execution error');
-                            return;
-                        }
-
-
-
-
-
-                        const produkIdd = `SELECT TOP 1 ID_PRODUK
+        const produkIdd = `SELECT TOP 1 ID_PRODUK
           FROM produk
           ORDER BY ID_PRODUK DESC
       ;
         `;
 
-                        conn.query(produkIdd, (err, resultsp2) => {
-                            if (err) {
-                                console.error('Error executing query2:', err);
-                                conn.close();
-                                res.status(500).send('Query2 execution error');
-                                return;
-                            }
+        conn.query(produkIdd, (err, resultsp2) => {
+            if (err) {
+                console.error('Error executing query2:', err);
+                conn.close();
+                res.status(500).send('Query2 execution error');
+                return;
+            }
 
-                            const produkId = resultsp2[0].ID_PRODUK;
+            const produkId = resultsp2[0].ID_PRODUK;
 
-                            let query4 = ''
-                            for (let i = 0; i < USERNAME.length; i++) {
-                                query4 += `INSERT INTO account(PRODUK_ID, USERNAME, PASS, EXP_DATE_PASSWORD, JENIS_AKUN, FLAG_STATUS, TANGGAL_CREATE)
-              VALUES(${produkId}, '${USERNAME[i]}', '${PASS[i]}', '${EXP_DATE_PASSWORD[i]}', '${JENIS_AKUN[i]}', 1, '${TANGGAL_CREATE}')`
-                                console.log('Received ID4:', query4);
-                            }
-                            conn.query(query4, (err, resultsq4) => {
-                                if (err) {
-                                    console.error('Error executing query2:', err);
-                                    conn.close();
-                                    res.status(500).send('Query2 execution error');
-                                    return;
-                                }
+            let query4 = ''
+            for (let i = 0; i < IP_SERVER.length; i++) {
+                query4 += `INSERT INTO spec_server(WEB_SERVER_ID, PRODUK_DETAIL_ID, IP_SERVER, CPU, RAM, STORAGE)
+              VALUES(${SERVER[i]}, ${produkId}, '${IP_SERVER[i]}', '${CPU[i]}', '${RAM[i]}', '${STORAGE[i]}');`
+                console.log('Received ID4:', query4);
+            }
+            conn.query(query4, (err, resultsq4) => {
+                if (err) {
+                    console.error('Error executing query2:', err);
+                    conn.close();
+                    res.status(500).send('Query2 execution error');
+                    return;
+                }
 
-                                res.json({ success: true });
-                                conn.close();
-                            });
-                        });
-                    });
-                });
+                res.json({ success: true });
+                conn.close();
             });
         });
     });

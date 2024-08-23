@@ -35,7 +35,7 @@ app.get('/main-table', (req, res) => {
     status.NAMA_STATUS 
     FROM produk 
     INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
-    INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER 
+    INNER JOIN spec_server ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID 
     INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS 
     INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS`;
 
@@ -222,7 +222,6 @@ app.post('/full-detail', (req, res) => {
     produk_detail.PIC_NIPPOS, 
     produk_detail.AKSES,
     produk_detail.DEVELOPER,
-    produk_detail.SERVER,
     produk_detail.BUSINESS_OWNER, 
     produk_detail.WAKTU_OPERASIONAL, 
     produk_detail.URL, 
@@ -237,6 +236,7 @@ app.post('/full-detail', (req, res) => {
 
     spec_server.ID_SPEC_SERVER,
     spec_server.WEB_SERVER_ID,
+    spec_server.PRODUK_DETAIL_ID,
     spec_server.IP_SERVER, 
     spec_server.CPU, 
     spec_server.RAM, 
@@ -252,7 +252,7 @@ app.post('/full-detail', (req, res) => {
     INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER 
     INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS 
     INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN 
-    INNER JOIN spec_server ON produk_detail.SERVER = spec_server.ID_SPEC_SERVER 
+    INNER JOIN spec_server ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID 
     INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER 
     WHERE produk.ID_PRODUK = ${id};`;
 
@@ -292,7 +292,7 @@ app.post('/full-account', (req, res) => {
     account.JENIS_AKUN 
     FROM account
     INNER JOIN spec_server ON spec_server.ID_SPEC_SERVER = account.SPEC_SERVER_ID
-    INNER JOIN produk_detail ON spec_server.ID_SPEC_SERVER = produk_detail.SERVER 
+    INNER JOIN produk_detail ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID 
     WHERE produk_detail.PRODUK_ID = ${id};`;
         // console.log('Received ID:', query);
         conn.query(query, (err, results) => {
@@ -368,7 +368,6 @@ app.post('/update-all', (req, res) => {
     PENEMPATAN = ${PENEMPATAN},
     AKSES = ${AKSES},
     DEVELOPER = ${DEVELOPER},
-    SERVER = ${SERVER},
     BUSINESS_OWNER = '${BUSINESS_OWNER}',
     WAKTU_OPERASIONAL = '${WAKTU_OPERASIONAL}',
     URL = '${URL}',
@@ -389,6 +388,7 @@ app.post('/update-all', (req, res) => {
 
         const query3 = `UPDATE spec_server SET
     WEB_SERVER_ID = ${WEB_SERVER_ID},
+    PRODUK_DETAIL_ID
     IP_SERVER = '${IP_SERVER}',
     CPU = '${CPU}',
     RAM = '${RAM}',
