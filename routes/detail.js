@@ -182,6 +182,50 @@ app.get('/pilih-server', (req, res) => {
     });
 });
 
+app.get('/pilih-produk', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `SELECT * FROM produk`;
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
+app.get('/pilih-ip-produk', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `SELECT * FROM spec_server INNER JOIN produk ON spec_server.PRODUK_DETAIL_ID = produk.ID_PRODUK;`;
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
 app.post('/full-detail', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         const { id } = req.body; // Mengambil id dari objek req.body
