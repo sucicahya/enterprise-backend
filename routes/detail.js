@@ -353,6 +353,45 @@ app.post('/full-account', (req, res) => {
     });
 });
 
+app.post('/full-server', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        const { id } = req.body; // Mengambil id dari objek req.body
+        // console.log('Received ID:', id);
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `
+        SELECT 
+        spec_server.ID_SPEC_SERVER, 
+        spec_server.WEB_SERVER_ID, 
+        spec_server.PRODUK_DETAIL_ID, 
+        spec_server.IP_SERVER,
+        spec_server.CPU,
+        spec_server.RAM,
+        spec_server.STORAGE,
+        web_server.NAMA_WEB_SERVER
+        FROM spec_server
+        INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER
+        INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
+        WHERE produk_detail.PRODUK_ID = ${id};`;
+        // console.log('Received ID:', query);
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                // console.log('Query Results:', results);
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
 app.post('/update-all', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         console.log('pppp', req.body)
