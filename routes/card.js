@@ -194,11 +194,12 @@ app.get('/jenis-database', (req, res) => {
     }
 
     const query = `
-    SELECT produk_detail.JENIS_DATABASE AS db, 
+    SELECT jenis_database.NAMA_DATABASE AS db, 
 COUNT(produk.NAMA_PRODUK) AS total 
 FROM produk_detail  
 LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
-GROUP BY produk_detail.JENIS_DATABASE;`;
+LEFT JOIN jenis_database ON jenis_database.ID_DATABASE = produk_detail.JENIS_DB
+GROUP BY jenis_database.NAMA_DATABASE;`;
 
     conn.query(query, (err, results) => {
       if (err) {

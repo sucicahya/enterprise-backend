@@ -47,8 +47,8 @@ app.post('/new-penempatan', (req, res) => {
             conn.close();
         });
     });
-}); `
-`
+}); 
+
 app.post('/new-akses', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         const { NEW_NAMA_AKSES } = req.body;
@@ -75,6 +75,34 @@ app.post('/new-akses', (req, res) => {
         });
     });
 });
+
+app.post('/new-database', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        const { NEW_NAMA_DATABASE } = req.body;
+        // console.log('Received NEW_NAMA_DATABASE:', NEW_NAMA_DATABASE);
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `
+    INSERT INTO jenis_database(NAMA_DATABASE) VALUES ('${NEW_NAMA_DATABASE}');`;
+        console.log("query", query)
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                // console.log('Query Results:', results);
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
 
 app.post('/new-webserver', (req, res) => {
     sql.open(connectionString, (err, conn) => {
@@ -277,7 +305,7 @@ app.post('/new-produk', (req, res) => {
 
                 const query2 = `INSERT INTO produk_detail
             (PRODUK_ID, PIC_NIPPOS, PENEMPATAN, AKSES, DEVELOPER, BUSINESS_OWNER, 
-              WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DATABASE, 
+              WAKTU_OPERASIONAL, URL, PORT, FRAMEWORK, VER_FRAMEWORK, JENIS_DB, 
               TANGGAL_LIVE, TANGGAL_AKHIR_UPDATE, TANGGAL_TUTUP, TANGGAL_DEPLOY)
             VALUES (${produkId},${PIC_NIPPOS},${PENEMPATAN},${AKSES},${DEVELOPER},${BUSINESS_OWNER},
             ${WAKTU_OPERASIONAL},${URL},${PORT},${FRAMEWORK},${VER_FRAMEWORK},${JENIS_DATABASE}, 
