@@ -29,13 +29,11 @@ app.get('/main-table', (req, res) => {
         const query = `
     SELECT produk.ID_PRODUK, 
     produk.NAMA_PRODUK, 
-    produk_detail.URL, 
-    spec_server.IP_SERVER, 
+    produk_detail.URL,
     karyawan.NAMA, 
     status.NAMA_STATUS 
     FROM produk 
     INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
-    INNER JOIN spec_server ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID 
     INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS 
     INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS`;
 
@@ -552,8 +550,8 @@ app.post('/update-all', (req, res) => {
                 //             return;
                 //         }
 
-                        res.json({ success: true });
-                        conn.close();
+                res.json({ success: true });
+                conn.close();
                 //     });
                 // });
             });
@@ -626,7 +624,7 @@ app.post('/update-server', (req, res) => {
         IP_SERVER = '${IP_SERVER[i]}',
         CPU = '${CPU[i]}',
         RAM = '${RAM[i]}',
-        STORAGE = '${STORAGE}'
+        STORAGE = '${STORAGE[i]}'
         WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};\n`;
         }
 
@@ -640,33 +638,33 @@ app.post('/update-server', (req, res) => {
         //         return;
         //     }
 
-            // conn.query(query2, (err, results) => {
-            //     if (err) {
-            //         console.error('Error executing query2:', err);
-            //         conn.close();
-            //         res.status(500).send('Query2 execution error');
-            //         return;
-            //     }
+        // conn.query(query2, (err, results) => {
+        //     if (err) {
+        //         console.error('Error executing query2:', err);
+        //         conn.close();
+        //         res.status(500).send('Query2 execution error');
+        //         return;
+        //     }
 
-                // conn.query(query3, (err, results) => {
-                //     if (err) {
-                //         console.error('Error executing query3:', err);
-                //         conn.close();
-                //         res.status(500).send('Query3 execution error');
-                //         return;
-                //     }
+        // conn.query(query3, (err, results) => {
+        //     if (err) {
+        //         console.error('Error executing query3:', err);
+        //         conn.close();
+        //         res.status(500).send('Query3 execution error');
+        //         return;
+        //     }
 
-                    conn.query(query4, (err, results) => {
-                        if (err) {
-                            console.error('Error executing query3:', err);
-                            conn.close();
-                            res.status(500).send('Query3 execution error');
-                            return;
-                        }
+        conn.query(query4, (err, results) => {
+            if (err) {
+                console.error('Error executing query3:', err);
+                conn.close();
+                res.status(500).send('Query3 execution error');
+                return;
+            }
 
-                        res.json({ success: true });
-                        conn.close();
-                    });
+            res.json({ success: true });
+            conn.close();
+        });
         //         });
         //     });
         // });
@@ -749,33 +747,33 @@ app.post('/update-account', (req, res) => {
         //         return;
         //     }
 
-            // conn.query(query2, (err, results) => {
-            //     if (err) {
-            //         console.error('Error executing query2:', err);
-            //         conn.close();
-            //         res.status(500).send('Query2 execution error');
-            //         return;
-            //     }
+        // conn.query(query2, (err, results) => {
+        //     if (err) {
+        //         console.error('Error executing query2:', err);
+        //         conn.close();
+        //         res.status(500).send('Query2 execution error');
+        //         return;
+        //     }
 
-                // conn.query(query3, (err, results) => {
-                //     if (err) {
-                //         console.error('Error executing query3:', err);
-                //         conn.close();
-                //         res.status(500).send('Query3 execution error');
-                //         return;
-                //     }
+        // conn.query(query3, (err, results) => {
+        //     if (err) {
+        //         console.error('Error executing query3:', err);
+        //         conn.close();
+        //         res.status(500).send('Query3 execution error');
+        //         return;
+        //     }
 
-                    conn.query(query4, (err, results) => {
-                        if (err) {
-                            console.error('Error executing query3:', err);
-                            conn.close();
-                            res.status(500).send('Query3 execution error');
-                            return;
-                        }
+        conn.query(query4, (err, results) => {
+            if (err) {
+                console.error('Error executing query3:', err);
+                conn.close();
+                res.status(500).send('Query3 execution error');
+                return;
+            }
 
-                        res.json({ success: true });
-                        conn.close();
-                    });
+            res.json({ success: true });
+            conn.close();
+        });
         //         });
         //     });
         // });
