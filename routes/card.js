@@ -13,7 +13,7 @@ const connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=40005-MP
 app.use(cors());
 app.use(express.json());
 
-const jwtkey= "secret";
+const jwtkey = "secret";
 
 const saltRounds = 12;
 
@@ -213,5 +213,48 @@ GROUP BY jenis_database.NAMA_DATABASE;`;
     });
   });
 });
+
+app.post('/pemberitahuan', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const nippos = req.body.nippos;
+    console.log('nippos', nippos);
+
+    // Prevent SQL Injection by using parameterized queries
+    const query = `
+      SELECT 
+        account.EXP_DATE_PASSWORD, 
+        account.JENIS_AKUN, 
+        spec_server.IP_SERVER,
+        produk.NAMA_PRODUK,
+        karyawan.NIPPOS
+      FROM produk_detail
+      INNER JOIN produk ON produk_detail.ID_PRODUK_DETAIL = produk.ID_PRODUK
+      INNER JOIN spec_server ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID
+      INNER JOIN account ON spec_server.ID_SPEC_SERVER = account.SPEC_SERVER_ID
+      INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS
+      WHERE karyawan.NIPPOS = ? AND
+      account.EXP_DATE_PASSWORD BETWEEN DATEADD(DAY, -7, CAST(GETDATE() AS DATE)) AND CAST(GETDATE() AS DATE);`; 
+
+    conn.query(query, [nippos], (err, results) => {
+      console.log("resss", results)
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error');
+      } else {
+        // console.log('Query Results:', results);
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
 
 export default app;

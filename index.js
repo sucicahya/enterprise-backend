@@ -24,9 +24,12 @@ const sql = require('msnodesqlv8');
 const cors = require('cors');
 const app = express();
 const port = 5000;
-const md5 = require('md5');
 
-const connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=40005-MP1PWS22;Database=enterprise;Trusted_Connection=yes;`;
+const connectionString = 
+`Driver={ODBC Driver 17 for SQL Server};
+Server=40005-MP1PWS22;
+Database=enterprise;
+Trusted_Connection=yes;`;
 
 // sql.open(connectionString, (err, conn) => {
 //   if (err) {
@@ -122,10 +125,13 @@ app.post('/login-sim',(req, res) => {
           };
 
           const token = jwt.sign(payload, jwtkey, options);
+          console.log('Generated Token:', token);
+          console.log('Generated results:', results);
 
           res.json({
             success: true,
-            token: token
+            token: token,
+            results
           });
         } else {
           res.status(401).send('Invalid username or password');
