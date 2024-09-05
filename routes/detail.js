@@ -48,7 +48,9 @@ app.get('/main-table', (req, res) => {
             conn.close();
         });
     });
-}); app.get('/pilih-penempatan', (req, res) => {
+});
+
+app.get('/pilih-penempatan', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         if (err) {
             console.error('Error occurred:', err);
@@ -777,6 +779,34 @@ app.post('/update-account', (req, res) => {
         //         });
         //     });
         // });
+    });
+});
+
+app.get('/down-table', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `
+    SELECT down_time.ID_DOWN_TIME, down_time.WAKTU_DOWN, down_time.WAKTU_SELESAI, down_time.PENYEBAB, down_time.SOLUSI, produk.NAMA_PRODUK, spec_server.IP_SERVER
+FROM down_time
+INNER JOIN spec_server ON down_time.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
+INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
+INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK`;
+
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                res.json(results);
+            }
+
+            conn.close();
+        });
     });
 });
 

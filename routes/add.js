@@ -47,7 +47,7 @@ app.post('/new-penempatan', (req, res) => {
             conn.close();
         });
     });
-}); 
+});
 
 app.post('/new-akses', (req, res) => {
     sql.open(connectionString, (err, conn) => {
@@ -533,6 +533,41 @@ app.post('/new-account', (req, res) => {
                     }
                 });
             }
+        });
+    });
+});
+
+app.post('/new-down-time', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        console.log('pppp', req.body)
+        var SPEC_SERVER_ID = req.body.SPEC_SERVER_ID;
+        var WAKTU_DOWN = req.body.WAKTU_DOWN;
+        var WAKTU_SELESAI = req.body.WAKTU_SELESAI;
+        var PENYEBAB = req.body.PENYEBAB;
+        var SOLUSI = req.body.SOLUSI;
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query1 = `INSERT INTO down_time(SPEC_SERVER_ID, WAKTU_DOWN, WAKTU_SELESAI, PENYEBAB, SOLUSI)
+    VALUES (${SPEC_SERVER_ID},'${WAKTU_DOWN}','${WAKTU_SELESAI}','${PENYEBAB}','${SOLUSI}');`
+
+
+        console.log('Received ID:', query1);
+        conn.query(query1, (err, resultsq1) => {
+            if (err) {
+                console.error('Error executing query1:', err);
+                conn.close();
+                res.status(500).send('Query1 execution error');
+                return;
+            }
+
+
+            res.json({ success: true });
+            conn.close();
+
         });
     });
 });
