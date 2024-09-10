@@ -300,17 +300,6 @@ app.post('/full-detail', (req, res) => {
     produk_detail.TANGGAL_TUTUP, 
     produk_detail.TANGGAL_DEPLOY, 
 
-    spec_server.ID_SPEC_SERVER,
-    spec_server.WEB_SERVER_ID,
-    spec_server.PRODUK_DETAIL_ID,
-    spec_server.IP_SERVER, 
-    spec_server.CPU, 
-    spec_server.RAM, 
-    spec_server.STORAGE, 
-
-    web_server.ID_WEB_SERVER,
-    web_server.NAMA_WEB_SERVER,
-
     jenis_database.ID_DATABASE,
     jenis_database.NAMA_DATABASE
 
@@ -321,8 +310,6 @@ app.post('/full-detail', (req, res) => {
     INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER 
     INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS 
     INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN 
-    INNER JOIN spec_server ON produk_detail.ID_PRODUK_DETAIL = spec_server.PRODUK_DETAIL_ID 
-    INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER 
     INNER JOIN jenis_database ON produk_detail.JENIS_DB = jenis_database.ID_DATABASE
     WHERE produk.ID_PRODUK = ${id};`;
 
