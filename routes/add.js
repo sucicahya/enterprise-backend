@@ -537,12 +537,15 @@ app.post('/new-account', (req, res) => {
     });
 });
 
-app.post('/new-down-time', (req, res) => {
+app.post('/new-availability', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         console.log('pppp', req.body)
         var SPEC_SERVER_ID = req.body.SPEC_SERVER_ID;
+        var UP_TIME = req.body.UP_TIME;
+        var DOWN_TIME = req.body.DOWN_TIME;
         var WAKTU_DOWN = req.body.WAKTU_DOWN;
         var WAKTU_SELESAI = req.body.WAKTU_SELESAI;
+        var KEJADIAN = req.body.KEJADIAN;
         var PENYEBAB = req.body.PENYEBAB;
         var SOLUSI = req.body.SOLUSI;
         if (err) {
@@ -551,8 +554,8 @@ app.post('/new-down-time', (req, res) => {
             return;
         }
 
-        const query1 = `INSERT INTO down_time(SPEC_SERVER_ID, WAKTU_DOWN, WAKTU_SELESAI, PENYEBAB, SOLUSI)
-    VALUES (${SPEC_SERVER_ID},'${WAKTU_DOWN}','${WAKTU_SELESAI}','${PENYEBAB}','${SOLUSI}');`
+        const query1 = `INSERT INTO availability(SPEC_SERVER_ID, UP_TIME, DOWN_TIME, WAKTU_DOWN, WAKTU_SELESAI, KEJADIAN, PENYEBAB, SOLUSI)
+    VALUES (${SPEC_SERVER_ID}, '${UP_TIME}','${DOWN_TIME}', '${WAKTU_DOWN}','${WAKTU_SELESAI}','${KEJADIAN}','${PENYEBAB}','${SOLUSI}');`
 
 
         console.log('Received ID:', query1);

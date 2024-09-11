@@ -769,7 +769,7 @@ app.post('/update-account', (req, res) => {
     });
 });
 
-app.get('/down-table', (req, res) => {
+app.get('/availibility', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         if (err) {
             console.error('Error occurred:', err);
@@ -778,9 +778,9 @@ app.get('/down-table', (req, res) => {
         }
 
         const query = `
-    SELECT down_time.ID_DOWN_TIME, down_time.WAKTU_DOWN, down_time.WAKTU_SELESAI, down_time.PENYEBAB, down_time.SOLUSI, produk.NAMA_PRODUK, spec_server.IP_SERVER
-FROM down_time
-INNER JOIN spec_server ON down_time.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
+    SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, produk.NAMA_PRODUK, spec_server.IP_SERVER
+FROM availability
+INNER JOIN spec_server ON availability.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
 INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
 INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK`;
 
@@ -789,6 +789,39 @@ INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK`;
                 console.error('Error executing query:', err);
                 res.status(500).send('Query execution error', err);
             } else {
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
+app.post('/full-availibility', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        const { id } = req.body; // Mengambil id dari objek req.body
+        // console.log('Received ID:', id);
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
+        const query = `
+    SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, availability.WAKTU_DOWN, availability.WAKTU_SELESAI, availability.KEJADIAN, availability.PENYEBAB, availability.SOLUSI, produk.NAMA_PRODUK, spec_server.IP_SERVER
+FROM availability
+INNER JOIN spec_server ON availability.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
+INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
+INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK
+    WHERE availability.ID_AVAILABILITY = ${id};`;
+
+        // console.log('Received ID:', query);
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                // console.log('Query Results:', results);
                 res.json(results);
             }
 
