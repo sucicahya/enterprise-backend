@@ -778,11 +778,10 @@ app.get('/availibility', (req, res) => {
         }
 
         const query = `
-    SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, produk.NAMA_PRODUK, spec_server.IP_SERVER
+        SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, produk.NAMA_PRODUK
 FROM availability
-INNER JOIN spec_server ON availability.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
-INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
-INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK`;
+INNER JOIN produk ON availability.PRODUK_ID = produk.ID_PRODUK
+INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID`;
 
         conn.query(query, (err, results) => {
             if (err) {
@@ -797,7 +796,7 @@ INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK`;
     });
 });
 
-app.post('/full-availibility', (req, res) => {
+app.post('/full-availability', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         const { id } = req.body; // Mengambil id dari objek req.body
         // console.log('Received ID:', id);
@@ -808,11 +807,10 @@ app.post('/full-availibility', (req, res) => {
         }
 
         const query = `
-    SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, availability.WAKTU_DOWN, availability.WAKTU_SELESAI, availability.KEJADIAN, availability.PENYEBAB, availability.SOLUSI, produk.NAMA_PRODUK, spec_server.IP_SERVER
+     SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, availability.WAKTU_DOWN, availability.WAKTU_SELESAI, availability.KEJADIAN, availability.PENYEBAB, availability.SOLUSI, produk.NAMA_PRODUK
 FROM availability
-INNER JOIN spec_server ON availability.SPEC_SERVER_ID = spec_server.ID_SPEC_SERVER
-INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
-INNER JOIN produk ON produk_detail.PRODUK_ID = produk.ID_PRODUK
+INNER JOIN produk ON availability.PRODUK_ID = produk.ID_PRODUK
+INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID
     WHERE availability.ID_AVAILABILITY = ${id};`;
 
         // console.log('Received ID:', query);
