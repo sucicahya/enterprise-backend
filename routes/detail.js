@@ -650,10 +650,10 @@ app.post('/update-server', (req, res) => {
                 res.status(500).send('Query3 execution error');
                 return;
             }
-
-            res.json({ success: true });
-            conn.close();
         });
+
+        res.json({ success: true });
+        conn.close();
         //         });
         //     });
         // });
@@ -759,10 +759,10 @@ app.post('/update-account', (req, res) => {
                 res.status(500).send('Query3 execution error');
                 return;
             }
-
-            res.json({ success: true });
-            conn.close();
         });
+
+        res.json({ success: true });
+        conn.close();
         //         });
         //     });
         // });
