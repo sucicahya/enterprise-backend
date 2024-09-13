@@ -780,8 +780,7 @@ app.get('/availibility', (req, res) => {
         const query = `
         SELECT availability.ID_AVAILABILITY, availability.UP_TIME, availability.DOWN_TIME, produk.NAMA_PRODUK
 FROM availability
-INNER JOIN produk ON availability.PRODUK_ID = produk.ID_PRODUK
-INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID`;
+INNER JOIN produk ON availability.PRODUK_ID = produk.ID_PRODUK`;
 
         conn.query(query, (err, results) => {
             if (err) {

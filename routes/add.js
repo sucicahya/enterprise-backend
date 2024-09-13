@@ -228,14 +228,14 @@ app.post('/new-produk', (req, res) => {
         var NAMA_PRODUK = req.body.NAMA_PRODUK;
         var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
         var URL = Array.isArray(req.body.URL) && req.body.URL.length === 0 ? null : JSON.stringify(req.body.URL).replace(/"/g, "'");
-        var IP_SERVER = Array.isArray(req.body.IP_SERVER) && req.body.IP_SERVER.length === 0 ? null : JSON.stringify(req.body.IP_SERVER).replace(/"/g, "'");
+        // var IP_SERVER = Array.isArray(req.body.IP_SERVER) && req.body.IP_SERVER.length === 0 ? null : JSON.stringify(req.body.IP_SERVER).replace(/"/g, "'");
         var PENEMPATAN = Array.isArray(req.body.PENEMPATAN) && req.body.PENEMPATAN.length === 0 ? null : Number(req.body.PENEMPATAN);
         var AKSES = Array.isArray(req.body.AKSES) && req.body.AKSES.length === 0 ? null : Number(req.body.AKSES);
-        var CPU = Array.isArray(req.body.CPU) && req.body.CPU.length === 0 ? null : JSON.stringify(req.body.CPU).replace(/"/g, "'");
-        var RAM = Array.isArray(req.body.RAM) && req.body.RAM.length === 0 ? null : JSON.stringify(req.body.RAM).replace(/"/g, "'");
-        var STORAGE = Array.isArray(req.body.STORAGE) && req.body.STORAGE.length === 0 ? null : JSON.stringify(req.body.STORAGE).replace(/"/g, "'");
-        var SERVER = Array.isArray(req.body.SERVER) && req.body.SERVER.length === 0 ? null : Number(req.body.SERVER);
-        var JENIS_DATABASE = Array.isArray(req.body.JENIS_DATABASE) && req.body.JENIS_DATABASE.length === 0 ? null : JSON.stringify(req.body.JENIS_DATABASE).replace(/"/g, "'");
+        // var CPU = Array.isArray(req.body.CPU) && req.body.CPU.length === 0 ? null : JSON.stringify(req.body.CPU).replace(/"/g, "'");
+        // var RAM = Array.isArray(req.body.RAM) && req.body.RAM.length === 0 ? null : JSON.stringify(req.body.RAM).replace(/"/g, "'");
+        // var STORAGE = Array.isArray(req.body.STORAGE) && req.body.STORAGE.length === 0 ? null : JSON.stringify(req.body.STORAGE).replace(/"/g, "'");
+        // var SERVER = Array.isArray(req.body.SERVER) && req.body.SERVER.length === 0 ? null : Number(req.body.SERVER);
+        var JENIS_DATABASE = Array.isArray(req.body.DATABASE) && req.body.DATABASE.length === 0 ? null : JSON.stringify(req.body.DATABASE).replace(/"/g, "'");
         var FRAMEWORK = Array.isArray(req.body.FRAMEWORK) && req.body.FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.FRAMEWORK).replace(/"/g, "'");
         var VER_FRAMEWORK = Array.isArray(req.body.VER_FRAMEWORK) && req.body.VER_FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.VER_FRAMEWORK).replace(/"/g, "'");
         var WAKTU_OPERASIONAL = Array.isArray(req.body.WAKTU_OPERASIONAL) && req.body.WAKTU_OPERASIONAL.length === 0 ? null : JSON.stringify(req.body.WAKTU_OPERASIONAL).replace(/"/g, "'");
@@ -244,23 +244,23 @@ app.post('/new-produk', (req, res) => {
         var PIC_NIPPOS = Array.isArray(req.body.PIC_NIPPOS) && req.body.PIC_NIPPOS.length === 0 ? null : JSON.stringify(req.body.PIC_NIPPOS).replace(/"/g, "'");
         // const { TELEPON } = req.body.TELEPON;
         var PORT = Array.isArray(req.body.PORT) && req.body.PORT.length === 0 ? null : req.body.PORT;
-        var NAMA_STATUS = Number(req.body.NAMA_STATUS);
-        var FLAG_STATUS = Number(req.body.FLAG_STATUS);
+        // var NAMA_STATUS = Number(req.body.NAMA_STATUS);
+        // var FLAG_STATUS = Number(req.body.FLAG_STATUS);
 
-        var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
+        // var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
         var TANGGAL_LIVE = Array.isArray(req.body.TANGGAL_LIVE) && req.body.TANGGAL_LIVE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_LIVE).replace(/"/g, "'");
         var TANGGAL_DEPLOY = Array.isArray(req.body.TANGGAL_DEPLOY) && req.body.TANGGAL_DEPLOY.length === 0 ? null : JSON.stringify(req.body.TANGGAL_DEPLOY).replace(/"/g, "'");
         var TANGGAL_AKHIR_UPDATE = Array.isArray(req.body.TANGGAL_AKHIR_UPDATE) && req.body.TANGGAL_AKHIR_UPDATE.length === 0 ? null : JSON.stringify(req.body.TANGGAL_AKHIR_UPDATE).replace(/"/g, "'");
         var TANGGAL_TUTUP = Array.isArray(req.body.TANGGAL_TUTUP) && req.body.TANGGAL_TUTUP.length === 0 ? null : JSON.stringify(req.body.TANGGAL_TUTUP).replace(/"/g, "'");
 
-        var ID_ACCOUNT = req.body.ID_ACCOUNT;
-        var JENIS_AKUN = req.body.JENIS_AKUN;
-        var USERNAME = req.body.USERNAME;
-        var USERNAMELength = req.body.USERNAME;
-        var PASS = req.body.PASS;
-        var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
-        var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT);
-        var TANGGAL_CREATE = new Date().toISOString().split('T')[0];
+        // var ID_ACCOUNT = req.body.ID_ACCOUNT;
+        // var JENIS_AKUN = req.body.JENIS_AKUN;
+        // var USERNAME = req.body.USERNAME;
+        // var USERNAMELength = req.body.USERNAME;
+        // var PASS = req.body.PASS;
+        // var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
+        // var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT);
+        // var TANGGAL_CREATE = new Date().toISOString().split('T')[0];
         // console.log('Received ID:', ID_ACCOUNT);
         // console.log('Received ID:', JENIS_AKUN);
         // console.log('Received ID:', USERNAME);
@@ -540,7 +540,7 @@ app.post('/new-account', (req, res) => {
 app.post('/new-availability', (req, res) => {
     sql.open(connectionString, (err, conn) => {
         console.log('pppp', req.body)
-        var SPEC_SERVER_ID = req.body.SPEC_SERVER_ID;
+        var PRODUK_ID = req.body.PRODUK_ID;
         var UP_TIME = req.body.UP_TIME;
         var DOWN_TIME = req.body.DOWN_TIME;
         var WAKTU_DOWN = req.body.WAKTU_DOWN;
@@ -554,8 +554,8 @@ app.post('/new-availability', (req, res) => {
             return;
         }
 
-        const query1 = `INSERT INTO availability(SPEC_SERVER_ID, UP_TIME, DOWN_TIME, WAKTU_DOWN, WAKTU_SELESAI, KEJADIAN, PENYEBAB, SOLUSI)
-    VALUES (${SPEC_SERVER_ID}, '${UP_TIME}','${DOWN_TIME}', '${WAKTU_DOWN}','${WAKTU_SELESAI}','${KEJADIAN}','${PENYEBAB}','${SOLUSI}');`
+        const query1 = `INSERT INTO availability(PRODUK_ID, UP_TIME, DOWN_TIME, WAKTU_DOWN, WAKTU_SELESAI, KEJADIAN, PENYEBAB, SOLUSI)
+    VALUES (${PRODUK_ID}, '${UP_TIME}','${DOWN_TIME}', '${WAKTU_DOWN}','${WAKTU_SELESAI}','${KEJADIAN}','${PENYEBAB}','${SOLUSI}');`
 
 
         console.log('Received ID:', query1);
