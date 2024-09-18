@@ -344,7 +344,7 @@ app.post('/new-server', (req, res) => {
         var CPU = req.body.CPU;
         var RAM = req.body.RAM;
         var STORAGE = req.body.STORAGE;
-        var SERVER = req.body.SERVER;
+        var JENIS_SERVER = req.body.JENIS_SERVER;
         var PRODUK = req.body.PRODUK;
         // var JENIS_DATABASE = Array.isArray(req.body.JENIS_DATABASE) && req.body.JENIS_DATABASE.length === 0 ? null : JSON.stringify(req.body.JENIS_DATABASE).replace(/"/g, "'");
         // var FRAMEWORK = Array.isArray(req.body.FRAMEWORK) && req.body.FRAMEWORK.length === 0 ? null : JSON.stringify(req.body.FRAMEWORK).replace(/"/g, "'");
@@ -404,8 +404,8 @@ app.post('/new-server', (req, res) => {
             let queryCount = 0;  // Counter for successful queries
             let hasErrorOccurred = false;  // Flag to check if an error has occurred
             for (let i = 0; i < IP_SERVER.length; i++) {
-                const query4 = `INSERT INTO spec_server(WEB_SERVER_ID, PRODUK_DETAIL_ID, IP_SERVER, CPU, RAM, STORAGE)
-                                VALUES(${SERVER[i]}, ${PRODUK[i]}, '${IP_SERVER[i]}', '${CPU[i]}', '${RAM[i]}', '${STORAGE[i]}');`;
+                const query4 = `INSERT INTO spec_server(JENIS_SERVER_ID, PRODUK_DETAIL_ID, IP_SERVER, CPU, RAM, STORAGE)
+                                VALUES(${JENIS_SERVER[i]}, ${PRODUK[i]}, '${IP_SERVER[i]}', '${CPU[i]}', '${RAM[i]}', '${STORAGE[i]}');`;
                 console.log('Received ID4:', query4);
 
                 conn.query(query4, (err, resultsq4) => {

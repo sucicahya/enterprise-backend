@@ -168,6 +168,28 @@ app.get('/pilih-server', (req, res) => {
             return;
         }
 
+        const query = `SELECT * FROM jenis_server`;
+        conn.query(query, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                res.status(500).send('Query execution error', err);
+            } else {
+                res.json(results);
+            }
+
+            conn.close();
+        });
+    });
+});
+
+app.get('/pilih-web-server', (req, res) => {
+    sql.open(connectionString, (err, conn) => {
+        if (err) {
+            console.error('Error occurred:', err);
+            res.status(500).send('Database connection error');
+            return;
+        }
+
         const query = `SELECT * FROM web_server`;
         conn.query(query, (err, results) => {
             if (err) {
@@ -379,15 +401,15 @@ app.post('/full-server', (req, res) => {
         const query = `
         SELECT 
         spec_server.ID_SPEC_SERVER, 
-        spec_server.WEB_SERVER_ID, 
+        spec_server.JENIS_SERVER_ID, 
         spec_server.PRODUK_DETAIL_ID, 
         spec_server.IP_SERVER,
         spec_server.CPU,
         spec_server.RAM,
         spec_server.STORAGE,
-        web_server.NAMA_WEB_SERVER
+        jenis_server.NAMA_SERVER
         FROM spec_server
-        INNER JOIN web_server ON spec_server.WEB_SERVER_ID = web_server.ID_WEB_SERVER
+        INNER JOIN jenis_server ON spec_server.JENIS_SERVER_ID = jenis_server.ID_SERVER
         INNER JOIN produk_detail ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
         WHERE produk_detail.PRODUK_ID = ${id};`;
         // console.log('Received ID:', query);
@@ -576,9 +598,9 @@ app.post('/update-server', (req, res) => {
         var PORT = req.body.PORT;
         var NAMA_STATUS = Number(req.body.NAMA_STATUS);
         var FLAG_STATUS = Number(req.body.FLAG_STATUS);
-        var NAMA_WEB_SERVER = req.body.NAMA_WEB_SERVER;
+        var NAMA_SERVER = req.body.NAMA_SERVER;
 
-        var WEB_SERVER_ID = Number(req.body.WEB_SERVER_ID)
+        var JENIS_SERVER_ID = Number(req.body.JENIS_SERVER_ID)
         var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
         var TANGGAL_DEPLOY = req.body.TANGGAL_DEPLOY;
         var TANGGAL_AKHIR_UPDATE = req.body.TANGGAL_AKHIR_UPDATE;
@@ -609,7 +631,7 @@ app.post('/update-server', (req, res) => {
         let query4 = '';
         for (let i = 0; i < LENGTH_SERVER; i++) {
             query4 += `UPDATE spec_server SET
-        WEB_SERVER_ID = ${NAMA_WEB_SERVER[i]},
+        JENIS_SERVER_ID = ${NAMA_SERVER[i]},
         IP_SERVER = '${IP_SERVER[i]}',
         CPU = '${CPU[i]}',
         RAM = '${RAM[i]}',

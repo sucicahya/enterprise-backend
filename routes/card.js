@@ -135,6 +135,66 @@ app.get('/status-nonaktif', (req, res) => {
   });
 });
 
+app.get('/akses-internet', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    SELECT akses.NAMA_AKSES AS akses, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM akses
+    LEFT JOIN produk_detail ON produk_detail.AKSES = akses.ID_AKSES 
+    LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
+    WHERE akses.NAMA_AKSES = 'Internet' 
+    GROUP BY akses.NAMA_AKSES;`;
+
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
+app.get('/akses-intranet', (req, res) => {
+  sql.open(connectionString, (err, conn) => {
+    if (err) {
+      console.error('Error occurred:', err);
+      res.status(500).send('Database connection error');
+      return;
+    }
+
+    const query = `
+    SELECT akses.NAMA_AKSES AS akses, 
+    COUNT(produk.NAMA_PRODUK) AS total 
+    FROM akses
+    LEFT JOIN produk_detail ON produk_detail.AKSES = akses.ID_AKSES 
+    LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
+    WHERE akses.NAMA_AKSES = 'Intranet' 
+    GROUP BY akses.NAMA_AKSES;`;
+
+    conn.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Query execution error', err);
+      } else {
+        res.json(results);
+      }
+
+      conn.close();
+    });
+  });
+});
+
 app.get('/total', (req, res) => {
   sql.open(connectionString, (err, conn) => {
     if (err) {
