@@ -572,13 +572,13 @@ app.post('/update-all', (req, res) => {
 
 app.post('/update-server', (req, res) => {
     sql.open(connectionString, (err, conn) => {
-        console.log('pppp', req.body)
+        // console.log('pppp', req.body)
         // var ID_PRODUK = Number(req.body.ID_PRODUK); // Mengambil id dari objek req.body
         var NAMA_PRODUK = req.body.NAMA_PRODUK;
         var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
         // console.log('pppp', typeof (ID_PRODUK))
-        console.log('pppp', typeof (NAMA_PRODUK))
-        console.log('pppp', typeof (DESKRIPSI_PRODUK))
+        // console.log('pppp', typeof (NAMA_PRODUK))
+        // console.log('pppp', typeof (DESKRIPSI_PRODUK))
         var URL = req.body.URL;
         var IP_SERVER = req.body.IP_SERVER;
         var PENEMPATAN = Number(req.body.PENEMPATAN);
@@ -599,6 +599,7 @@ app.post('/update-server', (req, res) => {
         var NAMA_STATUS = Number(req.body.NAMA_STATUS);
         var FLAG_STATUS = Number(req.body.FLAG_STATUS);
         var NAMA_SERVER = req.body.NAMA_SERVER;
+        var MACAM_SERVER = req.body.MACAM_SERVER;
 
         var JENIS_SERVER_ID = Number(req.body.JENIS_SERVER_ID)
         var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
@@ -615,13 +616,13 @@ app.post('/update-server', (req, res) => {
         var ID_SPEC_SERVER = req.body.ID_SPEC_SERVER;
         var LENGTH_SERVER = Number(req.body.LENGTH_SERVER)
         var TANGGAL_UPDATE = new Date().toISOString().split('T')[0];
-        console.log('Received ID:', ID_ACCOUNT);
-        console.log('Received ID:', JENIS_AKUN);
-        console.log('Received ID:', USERNAME);
-        console.log('Received ID:', PASS);
-        console.log('Received ID:', typeof (EXP_DATE_PASSWORD[0]));
-        console.log('Received ID:', typeof (TANGGAL_LIVE));
-        console.log('Received ID:', LENGTH_ACCOUNT);
+        // console.log('Received ID:', ID_ACCOUNT);
+        // console.log('Received ID:', JENIS_AKUN);
+        // console.log('Received ID:', USERNAME);
+        // console.log('Received ID:', PASS);
+        // console.log('Received ID:', typeof (EXP_DATE_PASSWORD[0]));
+        // console.log('Received ID:', typeof (TANGGAL_LIVE));
+        // console.log('Received ID:', LENGTH_ACCOUNT);
         if (err) {
             console.error('Error occurred:', err);
             res.status(500).send('Database connection error');
@@ -635,12 +636,13 @@ app.post('/update-server', (req, res) => {
         IP_SERVER = '${IP_SERVER[i]}',
         CPU = '${CPU[i]}',
         RAM = '${RAM[i]}',
-        STORAGE = '${STORAGE[i]}'
+        STORAGE = '${STORAGE[i]}',
+        MACAM_SERVER = ${MACAM_SERVER[i]}
         WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};\n`;
         }
 
 
-        console.log('Received ID:', query4);
+        // console.log('Received ID:', query4);
         // conn.query(query1, (err, results) => {
         //     if (err) {
         //         console.error('Error executing query1:', err);
