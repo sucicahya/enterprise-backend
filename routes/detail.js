@@ -29,13 +29,30 @@ app.get('/main-table', (req, res) => {
         const query = `
     SELECT produk.ID_PRODUK, 
     produk.NAMA_PRODUK, 
+    produk.DESKRIPSI_PRODUK,
+    produk_detail.PIC_NIPPOS,
+    produk_detail.BUSINESS_OWNER,
+    produk_detail.WAKTU_OPERASIONAL,
     produk_detail.URL,
+    produk_detail.PORT,
+    produk_detail.VER_FRAMEWORK,
+    produk_detail.TANGGAL_LIVE,
+    produk_detail.TANGGAL_AKHIR_UPDATE,
+    produk_detail.TANGGAL_TUTUP,
+    produk_detail.TANGGAL_DEPLOY,
+    status.NAMA_STATUS,
+    penempatan.NAMA_PENEMPATAN,
     karyawan.NAMA, 
-    status.NAMA_STATUS 
+    karyawan.TELEPON,
+    developer.NAMA_DEVELOPER,
+    akses.NAMA_AKSES
     FROM produk 
     INNER JOIN produk_detail ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
     INNER JOIN karyawan ON produk_detail.PIC_NIPPOS = karyawan.NIPPOS 
-    INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS`;
+    INNER JOIN status ON produk.FLAG_STATUS = status.ID_STATUS
+    INNER JOIN penempatan ON penempatan.ID_PENEMPATAN = produk_detail.PENEMPATAN
+    INNER JOIN developer ON developer.ID_DEVELOPER = produk_detail.DEVELOPER
+    INNER JOIN akses ON akses.ID_AKSES = produk_detail.AKSES`;
 
         conn.query(query, (err, results) => {
             if (err) {
@@ -407,6 +424,7 @@ app.post('/full-server', (req, res) => {
         spec_server.CPU,
         spec_server.RAM,
         spec_server.STORAGE,
+        spec_server.MACAM_SERVER,
         jenis_server.NAMA_SERVER
         FROM spec_server
         INNER JOIN jenis_server ON spec_server.JENIS_SERVER_ID = jenis_server.ID_SERVER
@@ -444,7 +462,7 @@ app.post('/update-all', (req, res) => {
         var RAM = req.body.RAM;
         var STORAGE = req.body.STORAGE;
         var SERVER = Number(req.body.SERVER);
-        var JENIS_DATABASE = req.body.JENIS_DATABASE;
+        // var JENIS_DATABASE = req.body.JENIS_DATABASE;
         var FRAMEWORK = req.body.FRAMEWORK;
         var VER_FRAMEWORK = req.body.VER_FRAMEWORK;
         var WAKTU_OPERASIONAL = req.body.WAKTU_OPERASIONAL;
@@ -493,7 +511,6 @@ app.post('/update-all', (req, res) => {
     PORT = '${PORT}',
     FRAMEWORK = '${FRAMEWORK}',
     VER_FRAMEWORK = '${VER_FRAMEWORK}',
-    JENIS_DB = '${JENIS_DATABASE}',
     TANGGAL_LIVE = CAST(NULLIF('${TANGGAL_LIVE}', '') AS DATE),
     TANGGAL_AKHIR_UPDATE = CAST(NULLIF('${TANGGAL_AKHIR_UPDATE}', '') AS DATE),
     TANGGAL_TUTUP = CAST(NULLIF('${TANGGAL_TUTUP}', '') AS DATE),
@@ -572,115 +589,63 @@ app.post('/update-all', (req, res) => {
 
 app.post('/update-server', (req, res) => {
     sql.open(connectionString, (err, conn) => {
-        // console.log('pppp', req.body)
-        // var ID_PRODUK = Number(req.body.ID_PRODUK); // Mengambil id dari objek req.body
-        var NAMA_PRODUK = req.body.NAMA_PRODUK;
-        var DESKRIPSI_PRODUK = req.body.DESKRIPSI_PRODUK;
-        // console.log('pppp', typeof (ID_PRODUK))
-        // console.log('pppp', typeof (NAMA_PRODUK))
-        // console.log('pppp', typeof (DESKRIPSI_PRODUK))
-        var URL = req.body.URL;
-        var IP_SERVER = req.body.IP_SERVER;
-        var PENEMPATAN = Number(req.body.PENEMPATAN);
-        var AKSES = Number(req.body.AKSES);
-        var CPU = req.body.CPU;
-        var RAM = req.body.RAM;
-        var STORAGE = req.body.STORAGE;
-        var SERVER = Number(req.body.SERVER);
-        var JENIS_DATABASE = req.body.JENIS_DATABASE;
-        var FRAMEWORK = req.body.FRAMEWORK;
-        var VER_FRAMEWORK = req.body.VER_FRAMEWORK;
-        var WAKTU_OPERASIONAL = req.body.WAKTU_OPERASIONAL;
-        var DEVELOPER = req.body.DEVELOPER;
-        var BUSINESS_OWNER = req.body.BUSINESS_OWNER;
-        var PIC_NIPPOS = req.body.PIC_NIPPOS;
-        // const { TELEPON } = req.body.TELEPON;
-        var PORT = req.body.PORT;
-        var NAMA_STATUS = Number(req.body.NAMA_STATUS);
-        var FLAG_STATUS = Number(req.body.FLAG_STATUS);
-        var NAMA_SERVER = req.body.NAMA_SERVER;
-        var MACAM_SERVER = req.body.MACAM_SERVER;
-
-        var JENIS_SERVER_ID = Number(req.body.JENIS_SERVER_ID)
-        var TANGGAL_LIVE = req.body.TANGGAL_LIVE;
-        var TANGGAL_DEPLOY = req.body.TANGGAL_DEPLOY;
-        var TANGGAL_AKHIR_UPDATE = req.body.TANGGAL_AKHIR_UPDATE;
-        var TANGGAL_TUTUP = req.body.TANGGAL_TUTUP;
-
-        var ID_ACCOUNT = req.body.ID_ACCOUNT;
-        var JENIS_AKUN = req.body.JENIS_AKUN;
-        var USERNAME = req.body.USERNAME;
-        var PASS = req.body.PASS;
-        var EXP_DATE_PASSWORD = req.body.EXP_DATE_PASSWORD;
-        var LENGTH_ACCOUNT = Number(req.body.LENGTH_ACCOUNT)
-        var ID_SPEC_SERVER = req.body.ID_SPEC_SERVER;
-        var LENGTH_SERVER = Number(req.body.LENGTH_SERVER)
-        var TANGGAL_UPDATE = new Date().toISOString().split('T')[0];
-        // console.log('Received ID:', ID_ACCOUNT);
-        // console.log('Received ID:', JENIS_AKUN);
-        // console.log('Received ID:', USERNAME);
-        // console.log('Received ID:', PASS);
-        // console.log('Received ID:', typeof (EXP_DATE_PASSWORD[0]));
-        // console.log('Received ID:', typeof (TANGGAL_LIVE));
-        // console.log('Received ID:', LENGTH_ACCOUNT);
         if (err) {
             console.error('Error occurred:', err);
             res.status(500).send('Database connection error');
             return;
         }
 
-        let query4 = '';
+        // Ambil data dari request body
+        var NAMA_SERVER = req.body.NAMA_SERVER;
+        var IP_SERVER = req.body.IP_SERVER;
+        var CPU = req.body.CPU;
+        var RAM = req.body.RAM;
+        var STORAGE = req.body.STORAGE;
+        var MACAM_SERVER = req.body.MACAM_SERVER;
+        var ID_SPEC_SERVER = req.body.ID_SPEC_SERVER;
+        var LENGTH_SERVER = Number(req.body.LENGTH_SERVER);
+
+        // Proses update
         for (let i = 0; i < LENGTH_SERVER; i++) {
-            query4 += `UPDATE spec_server SET
-        JENIS_SERVER_ID = ${NAMA_SERVER[i]},
-        IP_SERVER = '${IP_SERVER[i]}',
+            // Update JENIS_SERVER_ID
+            let updateJenisServer = `UPDATE spec_server SET
+                JENIS_SERVER_ID = ${NAMA_SERVER[i]},
+                IP_SERVER = '${IP_SERVER[i]}',
         CPU = '${CPU[i]}',
         RAM = '${RAM[i]}',
         STORAGE = '${STORAGE[i]}',
         MACAM_SERVER = ${MACAM_SERVER[i]}
-        WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};\n`;
+                WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};`;
+
+            // Update MACAM_SERVER
+            // let updateMacamServer = `UPDATE spec_server SET
+            //     MACAM_SERVER = ${MACAM_SERVER[i]}
+            //     WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};`;
+
+            // Eksekusi query untuk update JENIS_SERVER_ID
+            conn.query(updateJenisServer, (err, results) => {
+                if (err) {
+                    console.error('Error executing updateJenisServer:', err);
+                    res.status(500).send('Error executing updateJenisServer');
+                    conn.close();
+                    return;
+                }
+            });
+
+            // Eksekusi query untuk update MACAM_SERVER
+            // conn.query(updateMacamServer, (err, results) => {
+            //     if (err) {
+            //         console.error('Error executing updateMacamServer:', err);
+            //         res.status(500).send('Error executing updateMacamServer');
+            //         conn.close();
+            //         return;
+            //     }
+            // });
         }
 
-
-        // console.log('Received ID:', query4);
-        // conn.query(query1, (err, results) => {
-        //     if (err) {
-        //         console.error('Error executing query1:', err);
-        //         conn.close();
-        //         res.status(500).send('Query1 execution error');
-        //         return;
-        //     }
-
-        // conn.query(query2, (err, results) => {
-        //     if (err) {
-        //         console.error('Error executing query2:', err);
-        //         conn.close();
-        //         res.status(500).send('Query2 execution error');
-        //         return;
-        //     }
-
-        // conn.query(query3, (err, results) => {
-        //     if (err) {
-        //         console.error('Error executing query3:', err);
-        //         conn.close();
-        //         res.status(500).send('Query3 execution error');
-        //         return;
-        //     }
-
-        conn.query(query4, (err, results) => {
-            if (err) {
-                console.error('Error executing query3:', err);
-                conn.close();
-                res.status(500).send('Query3 execution error');
-                return;
-            }
-        });
-
+        // Kirim respons sukses
         res.json({ success: true });
         conn.close();
-        //         });
-        //     });
-        // });
     });
 });
 
