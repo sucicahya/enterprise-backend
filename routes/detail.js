@@ -333,14 +333,10 @@ app.post('/full-detail', (req, res) => {
     produk_detail.PORT, 
     produk_detail.FRAMEWORK, 
     produk_detail.VER_FRAMEWORK, 
-    produk_detail.JENIS_DB, 
     produk_detail.TANGGAL_LIVE, 
     produk_detail.TANGGAL_AKHIR_UPDATE, 
     produk_detail.TANGGAL_TUTUP, 
-    produk_detail.TANGGAL_DEPLOY, 
-
-    jenis_database.ID_DATABASE,
-    jenis_database.NAMA_DATABASE
+    produk_detail.TANGGAL_DEPLOY
 
     FROM produk_detail 
     INNER JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID 
@@ -349,7 +345,6 @@ app.post('/full-detail', (req, res) => {
     INNER JOIN developer ON produk_detail.DEVELOPER = developer.ID_DEVELOPER 
     INNER JOIN karyawan ON karyawan.NIPPOS = produk_detail.PIC_NIPPOS 
     INNER JOIN penempatan ON produk_detail.PENEMPATAN = penempatan.ID_PENEMPATAN 
-    INNER JOIN jenis_database ON produk_detail.JENIS_DB = jenis_database.ID_DATABASE
     WHERE produk.ID_PRODUK = ${id};`;
 
         // console.log('Received ID:', query);
@@ -609,18 +604,17 @@ app.post('/update-server', (req, res) => {
         for (let i = 0; i < LENGTH_SERVER; i++) {
             // Update JENIS_SERVER_ID
             let updateJenisServer = `UPDATE spec_server SET
-                JENIS_SERVER_ID = ${NAMA_SERVER[i]},
+                JENIS_SERVER_ID = '${NAMA_SERVER[i]}',
                 IP_SERVER = '${IP_SERVER[i]}',
         CPU = '${CPU[i]}',
         RAM = '${RAM[i]}',
-        STORAGE = '${STORAGE[i]}',
-        MACAM_SERVER = ${MACAM_SERVER[i]}
+        STORAGE = '${STORAGE[i]}'
                 WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};`;
 
             // Update MACAM_SERVER
-            // let updateMacamServer = `UPDATE spec_server SET
-            //     MACAM_SERVER = ${MACAM_SERVER[i]}
-            //     WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};`;
+            let updateMacamServer = `UPDATE spec_server SET
+                MACAM_SERVER = '${MACAM_SERVER[i]}'
+                WHERE ID_SPEC_SERVER = ${ID_SPEC_SERVER[i]};`;
 
             // Eksekusi query untuk update JENIS_SERVER_ID
             conn.query(updateJenisServer, (err, results) => {
@@ -633,14 +627,14 @@ app.post('/update-server', (req, res) => {
             });
 
             // Eksekusi query untuk update MACAM_SERVER
-            // conn.query(updateMacamServer, (err, results) => {
-            //     if (err) {
-            //         console.error('Error executing updateMacamServer:', err);
-            //         res.status(500).send('Error executing updateMacamServer');
-            //         conn.close();
-            //         return;
-            //     }
-            // });
+            conn.query(updateMacamServer, (err, results) => {
+                if (err) {
+                    console.error('Error executing updateMacamServer:', err);
+                    res.status(500).send('Error executing updateMacamServer');
+                    conn.close();
+                    return;
+                }
+            });
         }
 
         // Kirim respons sukses

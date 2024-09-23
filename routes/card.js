@@ -257,8 +257,10 @@ app.get('/jenis-database', (req, res) => {
     SELECT jenis_database.NAMA_DATABASE AS db, 
 COUNT(produk.NAMA_PRODUK) AS total 
 FROM produk_detail  
-LEFT JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
-LEFT JOIN jenis_database ON jenis_database.ID_DATABASE = produk_detail.JENIS_DB
+INNER JOIN produk ON produk.ID_PRODUK = produk_detail.PRODUK_ID
+INNER JOIN spec_server ON spec_server.PRODUK_DETAIL_ID = produk_detail.ID_PRODUK_DETAIL
+INNER JOIN jenis_database ON spec_server.MACAM_SERVER = jenis_database.ID_DATABASE 
+WHERE spec_server.JENIS_SERVER_ID = 2
 GROUP BY jenis_database.NAMA_DATABASE;`;
 
     conn.query(query, (err, results) => {
